@@ -272,3 +272,56 @@ test("AT09: reordered service completion retains correlation; terminal drain rej
   );
   assert.equal(r.externalCalls.pending, 0);
 });
+test("AT17: invalid image and terminal in one IPC chunk cannot race into completed", async (t) => {
+  const { provider } = createCounterProvider();
+  const host = new ReplHost(
+    1,
+    fakeSpawner(({ child, send, init, cell, event }) => {
+      if (event === "execute")
+        send({
+          type: "rpc",
+          epoch: init.epoch,
+          capabilityRevision: "1",
+          rpcId: "1",
+          request: JSON.stringify({
+            cell: cell.cell,
+            provider: "counter",
+            method: "add",
+            args: { amount: 1 },
+          }),
+        });
+      else
+        queueMicrotask(() =>
+          child.stdout.write(
+            [
+              {
+                type: "output",
+                epoch: init.epoch,
+                frame: JSON.stringify({
+                  cell: cell.cell,
+                  type: "image",
+                  mimeType: "image/png",
+                  data: "AAAA",
+                }),
+              },
+              {
+                type: "complete",
+                epoch: init.epoch,
+                cell: cell.cell,
+                status: "completed",
+                warnings: [],
+              },
+            ]
+              .map((x) => JSON.stringify(x) + "\n")
+              .join(""),
+          ),
+        );
+    }),
+  );
+  t.after(() => host.close());
+  const session = await host.create(config(provider));
+  const r = await host.execute(session, { code: "wire fixture" }, context);
+  assert.equal(r.status, "failed");
+  assert.equal(r.receipts.length, 1);
+  assert.equal(r.receipts[0].effect, "confirmed");
+});

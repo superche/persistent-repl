@@ -662,7 +662,7 @@ export class ReplHost {
   }
   async #message(s: Session, m: any) {
     const a = s.active;
-    if (!a || a.finalized) return;
+    if (!a || a.finalized || a.stopped) return;
     if (!["fatal", "output", "rpc", "complete"].includes(m.type)) {
       await this.#terminate(s, "crashed", "INVALID_FRAME");
       return;
@@ -675,7 +675,7 @@ export class ReplHost {
       try {
         const item = JSON.parse(m.frame);
         if (item.cell !== a.id || a.stopped) return;
-        await this.#output(s, a, item);
+        this.#output(s, a, item);
       } catch (e) {
         a.completion = { status: "failed", error: safeError(e), warnings: [] };
         await this.#terminate(s, "failed", "OUTPUT_INVALID");
@@ -718,7 +718,7 @@ export class ReplHost {
       this.#finish(s, a, m.status, m.error, m.warnings);
     }
   }
-  async #output(s: Session, a: Active, item: any) {
+  #output(s: Session, a: Active, item: any) {
     const bytes = Buffer.byteLength(JSON.stringify(item));
     if (item.type === "image") {
       if (++a.images > s.policy.images) {

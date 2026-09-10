@@ -1,6 +1,6 @@
 # Acceptance evidence — 0.1.0 integration candidate
 
-Evidence date: 2026-09-11 (Asia/Shanghai). The final local automated suite passed 51 tests, followed by all three generic/CUA/MCP examples. All automated target/service data is synthetic. Environment: macOS arm64, Darwin 25.5.0 / Apple M5 Pro, Node 22.19.0. Electron UI fixture: 44.3.0. Versions/integrity: [version-manifest.json](version-manifest.json). Source revision: the Git commit carrying this report (release tag identifies the exact tree).
+Evidence date: 2026-09-11 (Asia/Shanghai). The final local automated suite passed 52 tests, followed by all three generic/CUA/MCP examples. All automated target/service data is synthetic. Environment: macOS arm64, Darwin 25.5.0 / Apple M5 Pro, Node 22.19.0. Electron UI fixture: 44.3.0. Versions/integrity: [version-manifest.json](version-manifest.json). Source revision: the Git commit carrying this report (release tag identifies the exact tree).
 
 **Gate A: not fully closed. Gate B: blocked.** Passing tests establish the named cases below, not an unconditional P0 acceptance claim. Remaining items are tracked in [handoff.md](handoff.md). `not-run` rows explicitly list covered portions and missing subcases. No P0 waiver is implied.
 
@@ -31,7 +31,7 @@ Evidence date: 2026-09-11 (Asia/Shanghai). The final local automated suite passe
 | AT14 | R11/R12 | pass | wall timeout/reset; cancellation retains unknown; same-cell continuation blocked; fsync intent before dispatch; SIGKILL/restart barrier, active-owner rejection and disk-failure refusal tested in recovery.test.mjs | — |
 | AT15 | R12 | pass | new epoch/cleared binding, resource invalidation, no mock user-target closure, disposed session rejects reuse | blocked |
 | AT16 | R13 | pass | undefined/BigInt/cycle/Error/Map/Set/TypedArray tags; no getter/toJSON execution | — |
-| AT17 | R13/R14 | pass | text flooding/stalled consumer/invalid PNG retain terminal and executed-action receipts; MCP cancellation/EOF remain diagnosable | — |
+| AT17 | R13/R14 | pass | text flooding/stalled consumer/invalid PNG and same-chunk image/terminal race retain terminal and executed-action receipts; MCP cancellation/EOF remain diagnosable | — |
 | AT18 | R14/R18 | pass | CRC-validated PNG in SDK/MCP; unobserved, altered digest/bytes and stale screenshot guards refused in mock | blocked |
 | AT19 | R15 | not-run | guest process/fs/network/IPC/import/prototype attacks and stale-revision/raw malformed-frame tests pass; module/Promise and reordered-message fixtures also pass; OS hard budget remains | — |
 | AT20 | R16 | pass | diagnostic fields allowlist and synthetic secret/source scan; no component content log | — |

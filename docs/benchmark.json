@@ -1,0 +1,37 @@
+{
+  "fixture": true,
+  "date": "2026-09-10T15:49:42.547Z",
+  "node": "v22.19.0",
+  "platform": "darwin",
+  "release": "25.5.0",
+  "arch": "arm64",
+  "cpu": "Apple M5 Pro",
+  "warmParallelPairMs": {
+    "n": 200,
+    "p50": 0.9899580000000014,
+    "p95": 2.715750000000014,
+    "max": 3.9217499999999745
+  },
+  "coldMs": {
+    "n": 30,
+    "p50": 146.1587499999987,
+    "p95": 167.36783400000013,
+    "max": 181.9385830000001
+  },
+  "stability": {
+    "cells": 2000,
+    "sessions": 2,
+    "pass": true
+  },
+  "lifecycle": {
+    "cycles": 100,
+    "kernelPids": 202,
+    "remaining": 0
+  },
+  "observedMaxRssBytes": 134299648,
+  "budgets": {
+    "warmP95": 100,
+    "coldP95": 2000,
+    "rssBytes": 268435456
+  }
+}

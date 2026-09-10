@@ -1,0 +1,6 @@
+node_modules/
+dist/
+*.tgz
+work/
+.DS_Store
+examples/electron/node_modules/

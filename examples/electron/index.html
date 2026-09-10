@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" /><meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self'; style-src 'self'; img-src data:"
+  /><title>Persistent REPL · Synthetic CUA</title
+  ><link rel="stylesheet" href="style.css" />
+  <body>
+    <header>
+      <p class="eyebrow">SYNTHETIC FIXTURE · NO DEVICE CONTROL</p>
+      <h1>Persistent JavaScript, controlled effects.</h1>
+      <p>
+        Run cells, retain objects and inspect the independent model and preview
+        channels.
+      </p>
+    </header>
+    <main>
+      <div class="toolbar">
+        <button id="run">Run cell</button><button id="stop">Stop</button
+        ><button id="reset">Reset kernel</button
+        ><button id="dispose">Dispose session</button
+        ><span id="state">new</span>
+      </div>
+      <label for="code">JavaScript cell</label
+      ><textarea id="code" spellcheck="false">
+let tab = await cua.getTab("tab-1");
+let state = await tab.getState();
+output.value(state.observation.state);
+output.image(state.observation.image.data, "image/png");</textarea>
+      <div class="columns">
+        <section>
+          <h2>Model output</h2>
+          <div id="model"></div>
+        </section>
+        <section>
+          <h2>Host preview</h2>
+          <div id="preview"></div>
+        </section>
+      </div>
+      <h2>Execution / control result</h2>
+      <pre id="result">
+Ready. The component kernel starts on the first cell.</pre>
+    </main>
+    <script src="renderer.js"></script>
+  </body>
+</html>

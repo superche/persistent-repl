@@ -1,0 +1,194 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { EventEmitter } from "node:events";
+import { PassThrough } from "node:stream";
+import { ReplHost, SEMANTICS_VERSION } from "@superche/persistent-repl";
+import { createCounterProvider } from "@superche/persistent-repl/fixtures";
+function fakeSpawner(script) {
+  return () => {
+    const child = new EventEmitter();
+    Object.assign(child, {
+      stdin: new PassThrough(),
+      stdout: new PassThrough(),
+      stderr: new PassThrough(),
+      exitCode: null,
+      signalCode: null,
+    });
+    child.kill = () => {
+      if (child.signalCode) return;
+      child.signalCode = "SIGKILL";
+      queueMicrotask(() => child.emit("exit", null, "SIGKILL"));
+    };
+    let init, cell;
+    const send = (frame) => child.stdout.write(JSON.stringify(frame) + "\n");
+    child.stdin.on("data", (data) => {
+      for (const line of String(data).trim().split("\n")) {
+        const frame = JSON.parse(line);
+        if (frame.type === "init") {
+          init = frame;
+          queueMicrotask(() => send({ type: "ready", epoch: init.epoch }));
+        } else if (frame.type === "execute") {
+          cell = frame;
+          script({ child, send, init, cell, event: "execute" });
+        } else script({ child, send, init, cell, event: "reply", frame });
+      }
+    });
+    return child;
+  };
+}
+const context = {
+  ownerKey: "fixture",
+  taskKey: "raw-wire",
+  turnKey: "1",
+  callKey: "1",
+  authorizationRevision: "1",
+};
+const config = (provider) => ({
+  ownerKey: "fixture",
+  taskKey: "raw-wire",
+  semanticsVersion: SEMANTICS_VERSION,
+  capabilityRevision: "1",
+  authorizationRevision: "1",
+  providers: [provider],
+  authorize: () => true,
+});
+test("AT09: duplicated kernel RPC and terminal frames do not redispatch or duplicate terminal", async (t) => {
+  const { provider, calls } = createCounterProvider();
+  const host = new ReplHost(
+    1,
+    fakeSpawner(({ send, init, cell, event }) => {
+      if (event === "execute") {
+        const rpc = {
+          type: "rpc",
+          epoch: init.epoch,
+          capabilityRevision: "1",
+          rpcId: "1",
+          request: JSON.stringify({
+            cell: cell.cell,
+            provider: "counter",
+            method: "add",
+            args: { amount: 1 },
+          }),
+        };
+        send(rpc);
+        send(rpc);
+      } else {
+        const done = {
+          type: "complete",
+          epoch: init.epoch,
+          cell: cell.cell,
+          status: "completed",
+          warnings: [],
+        };
+        send(done);
+        send(done);
+        send({
+          type: "output",
+          epoch: init.epoch,
+          frame: JSON.stringify({
+            cell: "previous-cell",
+            type: "text",
+            text: "late",
+          }),
+        });
+      }
+    }),
+  );
+  t.after(() => host.close());
+  const session = await host.create(config(provider));
+  const result = await host.execute(
+    session,
+    { code: "synthetic-wire-fixture" },
+    context,
+  );
+  assert.equal(calls.length, 1);
+  assert.equal(result.receipts.length, 1);
+  assert.equal(result.output.length, 0);
+  assert.equal(result.status, "completed");
+});
+test("AT09 AT19: malformed frame cannot erase a previously dispatched unknown write", async (t) => {
+  let wire;
+  const provider = {
+    name: "writer",
+    version: "1",
+    documentation: "Synthetic wire fault",
+    methods: {
+      write: {
+        params: { type: "object" },
+        result: {},
+        documentation: "Fault after dispatch",
+        mutation: true,
+        handler: () => {
+          wire.stdout.write("not-json\n");
+          return new Promise(() => {});
+        },
+      },
+    },
+  };
+  const host = new ReplHost(
+    1,
+    fakeSpawner(({ child, send, init, cell, event }) => {
+      wire = child;
+      if (event === "execute")
+        send({
+          type: "rpc",
+          epoch: init.epoch,
+          capabilityRevision: "1",
+          rpcId: "1",
+          request: JSON.stringify({
+            cell: cell.cell,
+            provider: "writer",
+            method: "write",
+            args: {},
+          }),
+        });
+    }),
+  );
+  t.after(() => host.close());
+  const session = await host.create({
+    ...config(provider),
+    policy: { rpcMs: 100 },
+  });
+  const r = await host.execute(
+    session,
+    { code: "synthetic-wire-fixture" },
+    context,
+  );
+  assert.equal(r.status, "crashed");
+  assert.equal(r.error.code, "INVALID_FRAME");
+  assert.equal(r.externalCalls.outcome, "unknown");
+  assert.equal(r.receipts[0].dispatched, "yes");
+});
+test("AT08 AT19: stale capability revision never dispatches", async (t) => {
+  const { provider, calls } = createCounterProvider();
+  const host = new ReplHost(
+    1,
+    fakeSpawner(({ send, init, cell, event }) => {
+      if (event === "execute")
+        send({
+          type: "rpc",
+          epoch: init.epoch,
+          capabilityRevision: "stale",
+          rpcId: "1",
+          request: JSON.stringify({
+            cell: cell.cell,
+            provider: "counter",
+            method: "add",
+            args: { amount: 1 },
+          }),
+        });
+      else
+        send({
+          type: "complete",
+          epoch: init.epoch,
+          cell: cell.cell,
+          status: "completed",
+          warnings: [],
+        });
+    }),
+  );
+  t.after(() => host.close());
+  const session = await host.create(config(provider));
+  await host.execute(session, { code: "synthetic-wire-fixture" }, context);
+  assert.equal(calls.length, 0);
+});

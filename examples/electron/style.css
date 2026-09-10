@@ -1,0 +1,95 @@
+:root {
+  color-scheme: dark;
+  font: 15px system-ui;
+  background: #12191f;
+  color: #e8edf0;
+}
+body {
+  margin: 0;
+}
+header {
+  padding: 30px 34px 20px;
+  border-bottom: 1px solid #304047;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: #9bd4c0;
+}
+h1 {
+  font-size: 27px;
+  margin: 8px 0;
+}
+header p:last-child {
+  color: #a9b8bf;
+}
+main {
+  padding: 24px 34px;
+}
+button {
+  padding: 9px 16px;
+  border: 1px solid #526870;
+  border-radius: 6px;
+  background: #263940;
+  color: inherit;
+  cursor: pointer;
+}
+#run {
+  background: #b2e5d2;
+  color: #142a22;
+  border: 0;
+}
+#stop {
+  color: #ffb8a6;
+}
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+#state {
+  margin-left: auto;
+  color: #b2e5d2;
+}
+textarea {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 150px;
+  margin-top: 8px;
+  padding: 14px;
+  background: #0a1117;
+  color: #deece4;
+  border: 1px solid #526870;
+  border-radius: 7px;
+  font: 14px/1.7 monospace;
+}
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+h2 {
+  font-size: 15px;
+  color: #b1c7d0;
+}
+section {
+  min-height: 100px;
+}
+pre {
+  font: 12px/1.6 monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 10px;
+  background: #0a1117;
+  max-height: 200px;
+  overflow: auto;
+}
+img {
+  width: 64px;
+  height: 64px;
+  image-rendering: pixelated;
+  border: 1px solid #526870;
+  margin-right: 8px;
+}

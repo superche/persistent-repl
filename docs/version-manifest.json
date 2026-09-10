@@ -6,7 +6,7 @@
   "adapter": "synthetic-cua/1.0.0",
   "quickjsEmscripten": "0.32.0",
   "engineWasmSha256": "105c3bed22d457e43e3d1c3c1c6959fda62a8fe06f0fc8a985303c3a2be72232",
-  "lockSha256": "2024688d0220a9e59d2ee0c0db576dae546dce212a97c90088c91be4223d092b",
+  "lockSha256": "35665b972f8aef1a5ddf9719ec86e361549185954529c8d854a32b9e01cc3967",
   "dependencies": [
     {
       "name": "@babel/code-frame",

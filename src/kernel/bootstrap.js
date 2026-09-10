@@ -112,6 +112,14 @@
     freeze = Object.freeze,
     tag = Object.prototype.toString;
   const define = Object.defineProperty;
+  const viewAccessors = [
+    Object.getPrototypeOf(Uint8Array.prototype),
+    DataView.prototype,
+  ].map((prototype) =>
+    ["buffer", "byteOffset", "byteLength"].map(
+      (name) => own(prototype)[name].get,
+    ),
+  );
   function serialize(value, depth = 0, seen = new Map(), budget = { n: 0 }) {
     if (++budget.n > 2000 || depth > 12)
       return { $type: "Truncated", reason: depth > 12 ? "depth" : "items" };
@@ -148,17 +156,22 @@
           2000,
         ),
       };
-    if (ArrayBuffer.isView(value))
+    if (ArrayBuffer.isView(value)) {
+      // Read internal view slots through captured intrinsics. Own shadowing getters
+      // such as value.buffer must never execute merely because a value is displayed.
+      let fields;
+      try {
+        fields = viewAccessors[0].map((get) => Reflect.apply(get, value, []));
+      } catch {
+        fields = viewAccessors[1].map((get) => Reflect.apply(get, value, []));
+      }
       return {
         $type: "TypedArray",
         values: Array.from(
-          new Uint8Array(
-            value.buffer,
-            value.byteOffset,
-            Math.min(value.byteLength, 2048),
-          ),
+          new Uint8Array(fields[0], fields[1], Math.min(fields[2], 2048)),
         ),
       };
+    }
     const descriptors = own(value),
       result = Array.isArray(value) ? [] : Object.create(null);
     for (const k of keys(descriptors).slice(0, 2000)) {

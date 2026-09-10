@@ -191,3 +191,16 @@ test("AT10 AT19: module async errors, dependency denial and Promise combinations
   await run("done(1); await Promise.resolve();", {}, { turnKey: "turn/new" });
   assert.equal(counter.calls.length, 0);
 });
+test("AT16: typed-array and DataView shadowing getters never run during output", async (t) => {
+  const { run, counter } = await fixture(t);
+  const r = await run(
+    'let touched=0; let typed=new Uint8Array([7,8]); let view=new DataView(new Uint8Array([9,10]).buffer); for(const v of [typed,view])for(const key of ["buffer","byteOffset","byteLength"])Object.defineProperty(v,key,{get(){touched++;services.counter.add({amount:1});throw new Error("getter called")}});output.value(typed);output.value(view);output.value(touched);',
+  );
+  assert.equal(r.status, "completed");
+  assert.equal(counter.calls.length, 0);
+  assert.deepEqual(values(r), [
+    { $type: "TypedArray", values: [7, 8] },
+    { $type: "TypedArray", values: [9, 10] },
+    0,
+  ]);
+});

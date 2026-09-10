@@ -1,6 +1,6 @@
 # Acceptance evidence — 0.1.0 integration candidate
 
-Evidence date: 2026-09-11 (Asia/Shanghai). All automated target/service data is synthetic. Environment: macOS arm64, Darwin 25.5.0 / Apple M5 Pro, Node 22.19.0. Electron UI fixture: 44.3.0. Versions/integrity: [version-manifest.json](version-manifest.json). Source revision: the Git commit carrying this report (release tag identifies the exact tree).
+Evidence date: 2026-09-11 (Asia/Shanghai). The final local automated suite passed 51 tests, followed by all three generic/CUA/MCP examples. All automated target/service data is synthetic. Environment: macOS arm64, Darwin 25.5.0 / Apple M5 Pro, Node 22.19.0. Electron UI fixture: 44.3.0. Versions/integrity: [version-manifest.json](version-manifest.json). Source revision: the Git commit carrying this report (release tag identifies the exact tree).
 
 **Gate A: not fully closed. Gate B: blocked.** Passing tests establish the named cases below, not an unconditional P0 acceptance claim. Remaining items are tracked in [handoff.md](handoff.md). `not-run` rows explicitly list covered portions and missing subcases. No P0 waiver is implied.
 

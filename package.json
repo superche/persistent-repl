@@ -25,7 +25,8 @@
     "src",
     "test",
     "scripts",
-    "tsconfig.json"
+    "tsconfig.json",
+    "npm-shrinkwrap.json"
   ],
   "scripts": {
     "build": "tsc && cp src/kernel/bootstrap.js dist/kernel/bootstrap.js",

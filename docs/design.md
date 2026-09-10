@@ -71,3 +71,5 @@ Only terminal metadata is sent to the diagnostic hook: correlation IDs, stage, c
 - [MCP cancellation semantics](https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/cancellation)
 
 These public sources informed the design; they do not establish this package's acceptance results.
+
+Async generators are explicitly rejected before execution; use async functions and registered event/wait resources. Guest timers are not exposed. All ordinary unawaited RPC callback chains drain within the cell budget, and delayed unhandled rejections are reported in the original terminal.

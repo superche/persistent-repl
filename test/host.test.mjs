@@ -277,6 +277,10 @@ test("AT06 AT13: failed bootstrap never reports ready; killed kernel is diagnosa
   assert.equal((await good.host.reset(good.session)).reset, true);
 });
 test("AT14: cancellation of a dispatched pending write preserves unknown", async (t) => {
+  let dispatched;
+  const dispatch = new Promise((resolve) => {
+    dispatched = resolve;
+  });
   const provider = {
     name: "writer",
     version: "1",
@@ -287,7 +291,10 @@ test("AT14: cancellation of a dispatched pending write preserves unknown", async
         result: {},
         documentation: "Never completes before cancellation",
         mutation: true,
-        handler: () => new Promise(() => {}),
+        handler: () => {
+          dispatched();
+          return new Promise(() => {});
+        },
       },
     },
   };
@@ -296,9 +303,7 @@ test("AT14: cancellation of a dispatched pending write preserves unknown", async
     policy: { rpcMs: 500, cleanupMs: 100 },
   });
   const p = run("await services.writer.write({})");
-  while ((await host.status(session)).state !== "running")
-    await new Promise((r) => setTimeout(r, 5));
-  await new Promise((r) => setTimeout(r, 250));
+  await dispatch;
   const s = await host.status(session);
   await host.cancel(session, s.executionId);
   const r = await p;
@@ -313,4 +318,25 @@ test("AT17: invalid and excessive images cannot erase terminal receipts", async 
   );
   assert.equal(r.status, "failed");
   assert.equal(r.receipts[0].effect, "confirmed");
+});
+test("AT10: unawaited callback chains drain and delayed rejection is part of the terminal", async (t) => {
+  const { run, counter } = await fixture(t);
+  const chain = await run(
+    'services.counter.delay({ms:20}).then(()=>services.counter.add({amount:1})).then(()=>output.text("drained"));',
+  );
+  assert.equal(chain.status, "completed");
+  assert.equal(counter.calls.length, 1);
+  assert.equal(chain.output[0].text, "drained");
+  const rejection = await run(
+    'services.counter.delay({ms:20}).then(()=>{throw new Error("late rejection")});',
+  );
+  assert.equal(rejection.error.code, "UNHANDLED_REJECTION");
+  assert.equal(
+    (await run("output.value(await Promise.resolve(4).finally(null));")).status,
+    "completed",
+  );
+  assert.match(
+    (await run("async function* unsupported(){yield 1}")).error.message,
+    /Async generators are unsupported/,
+  );
 });

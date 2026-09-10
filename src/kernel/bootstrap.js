@@ -73,6 +73,7 @@
     return this.then(undefined, rejected);
   };
   CellPromise.prototype.finally = function (callback) {
+    if (typeof callback !== "function") return this.then(callback, callback);
     return this.then(
       (value) => CellPromise.resolve(callback()).then(() => value),
       (error) =>

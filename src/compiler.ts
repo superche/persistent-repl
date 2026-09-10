@@ -16,6 +16,19 @@ export const RESERVED = [
   "eval",
   "Proxy",
 ];
+function rejectUnsupportedAsync(ast: t.File) {
+  traverse(ast, {
+    Function(path) {
+      if (path.node.async && path.node.generator)
+        throw Object.assign(
+          new SyntaxError(
+            "Async generators are unsupported; use async functions and registered wait resources.",
+          ),
+          { loc: path.node.loc?.start },
+        );
+    },
+  });
+}
 export function compile(
   code: string,
   previous: Binding[],
@@ -25,6 +38,7 @@ export function compile(
     sourceType: "module",
     allowAwaitOutsideFunction: true,
   });
+  rejectUnsupportedAsync(ast);
   const bindings: Binding[] = [];
   const warnings: { code: string; message: string; line?: number }[] = [];
   let programPath: any;
@@ -260,6 +274,7 @@ export function compile(
 /** All guest async functions, including registered modules/facades, use the tracked Promise. */
 export function compileModule(source: string) {
   const ast = parse(source, { sourceType: "module" });
+  rejectUnsupportedAsync(ast);
   return generate(
     transformFromAstSync(ast, source, {
       plugins: [asyncToGenerator],
@@ -272,6 +287,7 @@ export function compileModule(source: string) {
 }
 export function compileFacade(source: string) {
   const ast = parse(`(${source})`, { sourceType: "script" });
+  rejectUnsupportedAsync(ast);
   const transformed = transformFromAstSync(ast, source, {
     plugins: [asyncToGenerator],
     configFile: false,

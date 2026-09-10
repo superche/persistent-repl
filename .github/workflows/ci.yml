@@ -6,6 +6,7 @@ jobs:
   macos:
     runs-on: macos-14
     strategy:
+      fail-fast: false
       matrix:
         node: ['22.19.0', '24.18.0']
     steps:

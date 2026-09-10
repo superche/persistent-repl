@@ -47,3 +47,5 @@ output.value(await app.getState());
 Semantic/visual inputs must carry fresh guards from the same target. A visual guard additionally needs image ID/digest and trusted model-observation confirmation. The REPL cannot grant that confirmation. Keep callbacks local; do not serialize them as page scripts. Unsupported backend methods are not a request to fall back to another domain.
 
 No filesystem/network/shell/process/IPC globals, static cell imports/exports, dynamic Function/eval, Proxy, global mutation, audio, arbitrary artifacts or guest timers are enabled. Use registered services and registered dynamic module names. Pure functions and authorized persistent resource proxies can be reused across cells; delayed callbacks retain their original execution identity and cannot borrow a future turn.
+
+Async generators are explicitly rejected before execution; use async functions and registered event/wait resources. Guest timers are not exposed. All ordinary unawaited RPC callback chains drain within the cell budget, and delayed unhandled rejections are reported in the original terminal.

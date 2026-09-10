@@ -9,6 +9,8 @@ const send = (m: unknown) => {
   return process.stdout.write(JSON.stringify(m) + "\n");
 };
 const QuickJS = await getQuickJS();
+const supervisorPid = process.ppid;
+if (supervisorPid === 1) process.exit(1);
 const runtime = QuickJS.newRuntime();
 const vm = runtime.newContext();
 let kernel: QuickJSHandle,
@@ -62,7 +64,9 @@ async function receive(line: string) {
     policy = m.policy;
     runtime.setMemoryLimit(policy.heapBytes);
     runtime.setMaxStackSize(1024 * 1024);
-    runtime.setInterruptHandler(() => Date.now() > deadline);
+    runtime.setInterruptHandler(
+      () => Date.now() > deadline || process.ppid !== supervisorPid,
+    );
     const allowed = new Map<string, string>(
       m.modules.map((r: any) => [r.name, compileModule(r.source)]),
     );
@@ -149,6 +153,18 @@ async function receive(line: string) {
       }
       settled.value.dispose();
       pump();
+      // Drain ordinary unawaited calls and their callback chains before closing the cell.
+      // Explicit session wait handles are host resources and do not occupy this map.
+      const drainDeadline = Math.min(deadline, Date.now() + policy.drainMs);
+      while (pending.size && Date.now() < drainDeadline) {
+        await new Promise<void>((resolve) => setTimeout(resolve, 1));
+        pump();
+      }
+      if (pending.size)
+        throw Object.assign(
+          new Error("Unawaited calls exceeded drain budget"),
+          { code: "PENDING_DRAIN_TIMEOUT", stage: "async" },
+        );
       const rejectionFn = vm.getProp(kernel, "unhandled");
       const rejectionCount = vm.unwrapResult(
         vm.callFunction(rejectionFn, kernel),

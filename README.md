@@ -52,7 +52,7 @@ Keep `SessionRef`, owner/task/turn/call identity, authorization revisions and ba
 - Output is explicit: `output.text`, `output.value`, `output.image(base64, 'image/png')`. There is no implicit last-expression re-evaluation.
 - Code runs in a QuickJS/WASM kernel inside a separately terminable process. macOS Seatbelt restricts that process. There is no Node `vm` security claim, guest process/env/fs/network/shell, automatic npm installation, or backend driver inside core.
 - `cancel` stops code and may discard the kernel. `reset` creates a lazy new epoch and revokes resources. `cua.stop` ends external control. `dispose` ends the REPL session. None rolls back an OS effect.
-- External receipts survive caught errors. Unknown effects block continuation until the **trusted host** reconciles them.
+- External receipts survive caught errors. Unknown effects block continuation until the **trusted host** reconciles them. Resumable product tasks configure `FileRecoveryJournal` for durable intent and crash/restart barriers.
 - The fixture CLI exposes a synthetic counter only. The product supplies its own providers/authentication; this package does not turn on a public network server.
 
 ## Documentation

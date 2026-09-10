@@ -16,7 +16,7 @@ The current profile allows runtime/bundle/system-library reads, root directory a
 
 ## Diagnostics and shutdown
 
-Use status for state/epoch/PID, plus metadata-only onDiagnostic events. Accepted failures include recovery, bindings and receipt completeness. On controlled quit/EOF call host.close. For parent crash or machine restart, the product must reconcile its durable CUA leases/effects before accepting more input: a new in-memory host does not prove old device actions stopped. See the remaining recovery integration item in handoff.
+Use status for state/epoch/PID, plus metadata-only onDiagnostic events. Accepted failures include recovery, bindings and receipt completeness. On controlled quit/EOF call host.close. For parent crash or machine restart, configure FileRecoveryJournal as described in integration.md. Its persisted task lease and intent records block a fresh host until the trusted host reconciles external effects. A running guest loop also checks parent identity through the QuickJS interrupt hook; parent death exits the kernel without waiting for the normal wall deadline. A new epoch never proves old device actions stopped.
 
 Raw kernel stderr is discarded because it can contain source/path details. Investigate startup using synthetic fixtures. Do not copy production code, screenshots, DOM or tokens into component logs. Sample apps may display synthetic fixture results; those are not the production logging policy.
 

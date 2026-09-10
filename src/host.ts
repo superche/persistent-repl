@@ -1,4 +1,5 @@
 import { dependencyReadRoots } from "./isolation.js";
+import type { RecoveryLease } from "./recovery.js";
 import {
   spawn,
   execFile,
@@ -118,6 +119,7 @@ interface Active {
   finalized: boolean;
 }
 interface Session {
+  recovery?: RecoveryLease;
   ref: SessionRef;
   config: TrustedSessionConfig;
   policy: ResourcePolicy;
@@ -274,7 +276,10 @@ export class ReplHost {
       })),
       modules: structuredClone(config.modules ?? []),
     };
+    const recovery = config.recovery?.open(config, ref.sessionId);
     this.#sessions.set(ref, {
+      recovery,
+      blocked: recovery?.blocked ? "RECOVERY_REQUIRED" : undefined,
       ref,
       config: snapshot,
       policy,
@@ -365,7 +370,20 @@ export class ReplHost {
   /** Only the trusted host may reconcile unknown effects, after checking its backend. */
   reconcile(ref: SessionRef, result: Cleanup) {
     const s = this.#get(ref);
-    if (result === "confirmed") s.blocked = undefined;
+    if (s.active) throw new Error("BUSY");
+    if (result === "confirmed") {
+      s.recovery?.reconcile();
+      s.blocked = undefined;
+    }
+  }
+  /** Trusted control plane; journal metadata is never exposed as a model capability. */
+  recoveryStatus(ref: SessionRef) {
+    const s = this.#get(ref);
+    return {
+      configured: !!s.recovery,
+      blocked: !!s.blocked,
+      pending: s.recovery?.pending ?? [],
+    };
   }
   execute(
     ref: SessionRef,
@@ -669,6 +687,14 @@ export class ReplHost {
       return;
     }
     if (m.type === "complete" && m.cell === a.id) {
+      if (a.completion) return;
+      if (
+        !["completed", "failed"].includes(m.status) ||
+        !Array.isArray(m.warnings)
+      ) {
+        await this.#terminate(s, "crashed", "INVALID_TERMINAL");
+        return;
+      }
       a.completion = m;
       if (a.pending.size) {
         await bounded(
@@ -752,6 +778,16 @@ export class ReplHost {
     }
   }
   async #rpc(s: Session, a: Active, m: any) {
+    if (a.completion) return; // terminal closes the dispatch scope, including during drain
+    if (
+      typeof m.rpcId !== "string" ||
+      m.rpcId.length < 1 ||
+      m.rpcId.length > 128 ||
+      typeof m.request !== "string"
+    ) {
+      await this.#terminate(s, "crashed", "INVALID_RPC_FRAME");
+      return;
+    }
     if (a.seen.has(m.rpcId)) return; // duplicate frames never redispatch
     if (a.seen.size >= s.policy.rpcCount) {
       await this.#terminate(s, "failed", "RPC_LIMIT");
@@ -772,6 +808,7 @@ export class ReplHost {
       dispatched: "no",
       outcome: "known",
     };
+    let journaled = false;
     let controller: AbortController | undefined,
       timeout: NodeJS.Timeout | undefined;
     const reply = (response: unknown) => {
@@ -806,6 +843,7 @@ export class ReplHost {
         fail("RPC_FRAME_LIMIT", "RPC arguments exceed budget");
       if (
         request.cell !== a.id ||
+        s.blocked ||
         a.stopped ||
         a.context.authorizationRevision !== s.revision ||
         s.revoked
@@ -865,6 +903,7 @@ export class ReplHost {
         );
       if (
         a.stopped ||
+        s.blocked ||
         controller.signal.aborted ||
         s.revoked ||
         s.revision !== a.context.authorizationRevision ||
@@ -878,6 +917,23 @@ export class ReplHost {
           "Authorization changed before dispatch",
           "authorization",
         );
+      if (method!.mutation && s.recovery) {
+        try {
+          s.recovery.begin({
+            ...correlation,
+            provider: receipt.provider,
+            method: receipt.method,
+          });
+          journaled = true;
+        } catch {
+          s.blocked = "RECOVERY_WRITE_FAILED";
+          fail(
+            "RECOVERY_WRITE_FAILED",
+            "Durable intent failed; action was not dispatched",
+            "recovery",
+          );
+        }
+      }
       receipt.stage = "handler";
       receipt.dispatched = "yes";
       receipt.outcome = method!.mutation ? "unknown" : "known";
@@ -974,6 +1030,13 @@ export class ReplHost {
         s.blocked = "UNKNOWN_EXTERNAL_EFFECT";
       reply({ error: receipt.error });
     } finally {
+      if (journaled && receipt.outcome === "known" && !a.finalized) {
+        try {
+          s.recovery!.settle(correlation.rpcId, correlation.executionId);
+        } catch {
+          s.blocked = "RECOVERY_WRITE_FAILED";
+        }
+      }
       if (timeout) clearTimeout(timeout);
       a.pending.delete(m.rpcId);
     }
@@ -1214,6 +1277,11 @@ export class ReplHost {
         () => undefined,
       );
     const cleanup = await this.#cleanup(s, "dispose");
+    try {
+      s.recovery?.close(cleanup === "confirmed");
+    } catch {
+      s.blocked = "RECOVERY_WRITE_FAILED";
+    }
     s.state = "disposed";
     s.cache.clear();
     s.last = undefined;
@@ -1231,7 +1299,7 @@ export class ReplHost {
       disposed: true,
       stopped: true,
       kernelAlive: false,
-      cleanup,
+      cleanup: s.blocked ? "unknown" : cleanup,
       recovery: cleanup === "unknown" ? ["Reconcile external effects."] : [],
     };
   }

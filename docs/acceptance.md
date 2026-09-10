@@ -1,6 +1,6 @@
 # Acceptance evidence — 0.1.0 integration candidate
 
-Evidence date: 2026-09-10. All automated target/service data is synthetic. Environment: macOS arm64, Darwin 25.5.0 / Apple M5 Pro, Node 22.19.0. Electron UI fixture: 44.3.0. Versions/integrity: [version-manifest.json](version-manifest.json). Source revision: the Git commit carrying this report (release tag identifies the exact tree).
+Evidence date: 2026-09-11 (Asia/Shanghai). All automated target/service data is synthetic. Environment: macOS arm64, Darwin 25.5.0 / Apple M5 Pro, Node 22.19.0. Electron UI fixture: 44.3.0. Versions/integrity: [version-manifest.json](version-manifest.json). Source revision: the Git commit carrying this report (release tag identifies the exact tree).
 
 **Gate A: not fully closed. Gate B: blocked.** Passing tests establish the named cases below, not an unconditional P0 acceptance claim. Remaining items are tracked in [handoff.md](handoff.md). `not-run` rows explicitly list covered portions and missing subcases. No P0 waiver is implied.
 
@@ -23,17 +23,17 @@ Evidence date: 2026-09-10. All automated target/service data is synthetic. Envir
 | AT06 | R06/R16 | pass | docs do not start a kernel; capability/schema versions match; throwing bootstrap never ready | — |
 | AT07 | R07 | pass | generic counter/echo via SDK and real MCP client; no CUA registration in generic path | — |
 | AT08 | R07/R08 | pass | wrong owner/schema/revision, declined approval, revocation during approval, ordinary JSON resource forgery denied | — |
-| AT09 | R07/R13 | not-run | SDK/in-flight call-key, raw MCP request-ID, duplicate kernel RPC/terminal and malformed-frame tests pass; full reordered-frame injection remains | — |
-| AT10 | R09/R10 | not-run | top-level await, unawaited RPC drain, unhandled rejection, old callback non-borrowing pass; broader async/module adversarial audit remains | — |
+| AT09 | R07/R13 | pass | SDK/call-key and MCP request-ID dedup; duplicate RPC/terminal, reversed reply order, stale epoch, late dispatch during terminal drain and malformed-frame fixtures | — |
+| AT10 | R09/R10 | pass | top-level await; unawaited callback-chain drain and delayed rejection; module async errors/dependency denial; Promise all/finally; old callbacks cannot borrow a new turn. Guest timers and async generators explicitly unavailable | — |
 | AT11 | R09/R19 | pass | arm precedes navigation, event survives until later cell, callback error cleans waiter, reset cleans waits | — |
 | AT12 | R10 | pass | second execution busy, independent status/cancel, two-session isolation and stress | — |
-| AT13 | R11 | not-run | infinite loop, memory growth, bootstrap failure, explicit child kill and MCP EOF tested; supervisor-crash recovery/hard-RSS containment pending | — |
-| AT14 | R11/R12 | not-run | wall timeout reset; in-flight write cancellation and caught unknown outcome block reset/continuation; durable restart barrier pending | — |
+| AT13 | R11 | not-run | infinite loop, memory growth, bootstrap failure, explicit child kill and MCP EOF tested; supervisor SIGKILL during RPC and CPU loop tested; hard-RSS containment pending | — |
+| AT14 | R11/R12 | pass | wall timeout/reset; cancellation retains unknown; same-cell continuation blocked; fsync intent before dispatch; SIGKILL/restart barrier, active-owner rejection and disk-failure refusal tested in recovery.test.mjs | — |
 | AT15 | R12 | pass | new epoch/cleared binding, resource invalidation, no mock user-target closure, disposed session rejects reuse | blocked |
 | AT16 | R13 | pass | undefined/BigInt/cycle/Error/Map/Set/TypedArray tags; no getter/toJSON execution | — |
 | AT17 | R13/R14 | pass | text flooding/stalled consumer/invalid PNG retain terminal and executed-action receipts; MCP cancellation/EOF remain diagnosable | — |
 | AT18 | R14/R18 | pass | CRC-validated PNG in SDK/MCP; unobserved, altered digest/bytes and stale screenshot guards refused in mock | blocked |
-| AT19 | R15 | not-run | guest process/fs/network/IPC/import/prototype attacks and stale-revision/raw malformed-frame tests pass; OS hard budget and remaining adversarial combinations remain | — |
+| AT19 | R15 | not-run | guest process/fs/network/IPC/import/prototype attacks and stale-revision/raw malformed-frame tests pass; module/Promise and reordered-message fixtures also pass; OS hard budget remains | — |
 | AT20 | R16 | pass | diagnostic fields allowlist and synthetic secret/source scan; no component content log | — |
 | AT21 | R17/R18 | pass | Browser → Native → original Browser; same-name/URL twins untouched | blocked |
 | AT22 | R18 | pass | action executes, post-observation fails, receipt retained; observation refresh causes no input replay | blocked |

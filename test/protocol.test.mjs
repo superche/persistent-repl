@@ -192,3 +192,83 @@ test("AT08 AT19: stale capability revision never dispatches", async (t) => {
   await host.execute(session, { code: "synthetic-wire-fixture" }, context);
   assert.equal(calls.length, 0);
 });
+test("AT09: reordered service completion retains correlation; terminal drain rejects new dispatch", async (t) => {
+  let resolveFirst;
+  const first = new Promise((r) => (resolveFirst = r));
+  const calls = [];
+  const replies = [];
+  const provider = {
+    name: "ordered",
+    version: "1",
+    documentation: "fixture",
+    methods: {
+      read: {
+        params: { type: "object" },
+        result: { type: "number" },
+        documentation: "fixture",
+        handler: async (args) => {
+          calls.push(args.id);
+          return args.id === 1 ? first : 2;
+        },
+      },
+    },
+  };
+  let terminalSent = false;
+  const host = new ReplHost(
+    1,
+    fakeSpawner(({ send, init, cell, event, frame }) => {
+      const rpc = (id) => ({
+        type: "rpc",
+        epoch: init.epoch,
+        capabilityRevision: "1",
+        rpcId: String(id),
+        request: JSON.stringify({
+          cell: cell.cell,
+          provider: "ordered",
+          method: "read",
+          args: { id },
+        }),
+      });
+      if (event === "execute") {
+        send({ ...rpc(99), epoch: "stale-epoch" });
+        send(rpc(1));
+        send(rpc(2));
+      } else {
+        replies.push([frame.rpcId, frame.response.value]);
+        if (!terminalSent) {
+          terminalSent = true;
+          send({
+            type: "complete",
+            epoch: init.epoch,
+            cell: cell.cell,
+            status: "completed",
+            warnings: [],
+          });
+          send(rpc(3));
+          send({
+            type: "complete",
+            epoch: init.epoch,
+            cell: cell.cell,
+            status: "failed",
+            warnings: [],
+          });
+          queueMicrotask(() => resolveFirst(1));
+        }
+      }
+    }),
+  );
+  t.after(() => host.close());
+  const session = await host.create(config(provider));
+  const r = await host.execute(session, { code: "wire fixture" }, context);
+  assert.deepEqual(calls, [1, 2]);
+  assert.deepEqual(replies, [
+    ["2", 2],
+    ["1", 1],
+  ]);
+  assert.equal(r.status, "completed");
+  assert.deepEqual(
+    r.receipts.map((x) => x.rpcId),
+    ["1", "2"],
+  );
+  assert.equal(r.externalCalls.pending, 0);
+});

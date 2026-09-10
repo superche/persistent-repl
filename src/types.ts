@@ -251,6 +251,8 @@ export interface TrustedSessionConfig {
   providers?: ServiceProvider[];
   modules?: ModuleRegistration[];
   authorize: AuthorizationHook;
+  /** Required for product tasks that can survive a host restart. Synthetic ephemeral tasks may omit it. */
+  recovery?: import("./recovery.js").RecoveryJournal;
   onOutput?: (event: OutputEvent) => void | Promise<void>;
   onDiagnostic?: (event: DiagnosticEvent) => void;
 }

@@ -151,3 +151,43 @@ test("AT16: safe deterministic values never call getters/toJSON", async (t) => {
   assert.equal(values(r)[0][1].$type, "BigInt");
   assert.equal(values(r)[0][6].secret.$type, "Accessor");
 });
+test("AT10 AT19: module async errors, dependency denial and Promise combinations preserve boundaries", async (t) => {
+  const { run, counter } = await fixture(t, {
+    modules: [
+      {
+        name: "async-fixture",
+        kind: "package",
+        version: "1",
+        license: "MIT",
+        source:
+          'export async function fail(){throw new Error("module rejection")}; export async function join(p){return await p};',
+      },
+      {
+        name: "denied-dependency",
+        kind: "package",
+        version: "1",
+        license: "MIT",
+        source: 'import "node:fs"; export const x=1;',
+      },
+    ],
+  });
+  await run('let m=await import("async-fixture");');
+  assert.equal((await run("m.fail();")).error.code, "UNHANDLED_REJECTION");
+  assert.equal(
+    (await run('await import("denied-dependency")')).status,
+    "failed",
+  );
+  assert.equal(
+    (
+      await run(
+        "output.value(await Promise.all([m.join(3),Promise.resolve(4)]));",
+      )
+    ).status,
+    "completed",
+  );
+  await run(
+    "let done; let p=new Promise(r=>done=r); Promise.all([p]).finally(()=>services.counter.add({amount:90}));",
+  );
+  await run("done(1); await Promise.resolve();", {}, { turnKey: "turn/new" });
+  assert.equal(counter.calls.length, 0);
+});

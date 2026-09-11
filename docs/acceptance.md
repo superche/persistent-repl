@@ -53,8 +53,15 @@ The run executes 2,000 total cells in two sessions and 100 create/reset/dispose 
 
 The sample was launched with an independent local ad-hoc bundle identity (`io.superche.persistent-repl.fixture`) to avoid selecting unrelated development Electron apps. Codex's available native CUA opened that exact fixture path and returned its AX tree.
 
+Final rc.3 revalidation completed on 2026-09-11: source `dbcecb69973dc9101820e64f6b4b8acd837f75ed`, Electron 44.3.0 / embedded Node 24.20.0. All 40 compiled runtime files were byte-equal to the delivered rc.3 package. The earlier Mac-lock interruption is superseded by this successful repeat. Exact execution IDs, epochs and observed terminal fields are recorded in [electron-ui.json](evidence/electron-ui.json).
+
 1. The initial CUA example completed and showed browser fixture state plus an image in Model output; Host preview independently showed its images.
 2. An infinite-loop cell entered `running`; the native Stop button returned `stopped: true`, `kernelAlive: false`, `cleanup: confirmed`, and `externalCleanup: confirmed`. Preview displayed `Preview stopped`.
 3. Reset returned `reset: true`, different old/new epochs, invalidated bindings/modules/resources/documentation and `cleanup: confirmed`. UI state became `new`.
+4. Dispose returned `disposed: true`, `stopped: true`, `kernelAlive: false`, `cleanup: confirmed`, and an empty recovery list. The sample process was then stopped.
 
 Native AX observations were used for control/terminal proof; initial background screenshots lagged and are not presented as fresh frame evidence. This is actual sample acceptance using Codex's CUA tool, with a synthetic backend inside the sample. It does not prove a production Hi Native/Browser executor, Hi chat or real model-bridge integration.
+
+## Additional memory investigation
+
+The source-only [memory prototype](memory-containment.md) now demonstrates OS fatal physical-footprint enforcement for native malloc, Node Buffer and the actual sandboxed kernel, including reset recovery and preserved sandbox denials. Its limit must be applied after sandbox-exec. It does not change the default runtime, is not an RSS-equivalent cap, and does not close the remaining P0 rows without the [budget decision and follow-up validation](memory-policy-proposal.md).

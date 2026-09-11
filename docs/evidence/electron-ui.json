@@ -1,0 +1,51 @@
+{
+  "fixture": true,
+  "backend": "synthetic CUA",
+  "driver": "actual Codex native CUA",
+  "sourceRevision": "dbcecb69973dc9101820e64f6b4b8acd837f75ed",
+  "tag": "v0.1.0-rc.3",
+  "observationsCompletedBy": "2026-09-11T02:50:37Z",
+  "appIdentity": "io.superche.persistent-repl.fixture",
+  "window": "Persistent REPL · Synthetic CUA",
+  "electron": "44.3.0",
+  "embeddedNode": "24.20.0",
+  "compiledFilesComparedWithDeliveredPackage": 40,
+  "compiledFilesByteEqual": true,
+  "packageSha256": "ab845b279aa344262f28d4506bee59fb250530b785e3f07e0ca18b7a457c0644",
+  "evidenceSurface": "native accessibility tree; screenshots lagged and are not fresh-frame evidence",
+  "run": {
+    "status": "completed",
+    "executionId": "733ff539-4ac4-4e3a-b28a-47bf5b490c38",
+    "kernelEpoch": "48dd56da-2ffc-4f51-ad70-f540d6dec258",
+    "modelOutput": ["browser state", "image"],
+    "independentHostPreviewImages": 2
+  },
+  "stop": {
+    "cell": "while(true){}",
+    "observedRunningBeforeStop": true,
+    "executionId": "8e2755be-d138-4d4c-9c96-404dc51ed19f",
+    "stopped": true,
+    "kernelAlive": false,
+    "cleanup": "confirmed",
+    "externalCleanup": "confirmed",
+    "preview": "Preview stopped"
+  },
+  "reset": {
+    "reset": true,
+    "oldEpoch": "48dd56da-2ffc-4f51-ad70-f540d6dec258",
+    "kernelEpoch": "6ffb9ded-5288-4895-b84d-25515dd5b4ff",
+    "invalidated": ["bindings", "modules", "resources", "documentation"],
+    "cleanup": "confirmed",
+    "uiState": "new"
+  },
+  "dispose": {
+    "disposed": true,
+    "stopped": true,
+    "kernelAlive": false,
+    "cleanup": "confirmed",
+    "recovery": []
+  },
+  "entryRetries": "Native input/state updates lagged. One extra read-only Run completed and a duplicate during the loop returned BUSY. An optional native/browser cell had confirmed action receipts but ended with ReferenceError due to a malformed input suffix; it is not counted as a completed cell.",
+  "sampleProcessStoppedAfterVerification": true,
+  "hiIntegrationClaim": false
+}

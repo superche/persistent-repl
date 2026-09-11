@@ -1,0 +1,629 @@
+{
+  "fixture": true,
+  "experimental": true,
+  "changesDefaultRuntime": false,
+  "date": "2026-09-11T03:03:26.953Z",
+  "node": "v22.19.0",
+  "release": "25.5.0",
+  "arch": "arm64",
+  "cpu": "Apple M5 Pro",
+  "uid": 501,
+  "metric": "physical footprint; not identical to RSS",
+  "nativeBaseline": {
+    "code": 0,
+    "signal": null,
+    "timedOut": false,
+    "pid": 60047,
+    "records": [
+      {
+        "event": "allocation",
+        "allocatedMiB": 0,
+        "usageResult": 0,
+        "rssBytes": 1474560,
+        "footprintBytes": 1048888
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 4,
+        "usageResult": 0,
+        "rssBytes": 5734400,
+        "footprintBytes": 5308728
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 8,
+        "usageResult": 0,
+        "rssBytes": 9945088,
+        "footprintBytes": 9519416
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 12,
+        "usageResult": 0,
+        "rssBytes": 14155776,
+        "footprintBytes": 13746512
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 16,
+        "usageResult": 0,
+        "rssBytes": 18366464,
+        "footprintBytes": 17957200
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 20,
+        "usageResult": 0,
+        "rssBytes": 22577152,
+        "footprintBytes": 22167888
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 24,
+        "usageResult": 0,
+        "rssBytes": 26787840,
+        "footprintBytes": 26378576
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 28,
+        "usageResult": 0,
+        "rssBytes": 30998528,
+        "footprintBytes": 30589264
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 32,
+        "usageResult": 0,
+        "rssBytes": 35209216,
+        "footprintBytes": 34799952
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 36,
+        "usageResult": 0,
+        "rssBytes": 39419904,
+        "footprintBytes": 39010640
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 40,
+        "usageResult": 0,
+        "rssBytes": 43646976,
+        "footprintBytes": 43254120
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 44,
+        "usageResult": 0,
+        "rssBytes": 47857664,
+        "footprintBytes": 47464808
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 48,
+        "usageResult": 0,
+        "rssBytes": 52068352,
+        "footprintBytes": 51675496
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 52,
+        "usageResult": 0,
+        "rssBytes": 56279040,
+        "footprintBytes": 55886184
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 56,
+        "usageResult": 0,
+        "rssBytes": 60473344,
+        "footprintBytes": 60080488
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 60,
+        "usageResult": 0,
+        "rssBytes": 64684032,
+        "footprintBytes": 64291176
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 64,
+        "usageResult": 0,
+        "rssBytes": 68894720,
+        "footprintBytes": 68501864
+      },
+      {
+        "event": "terminal",
+        "exit": 0,
+        "signal": 0
+      }
+    ],
+    "stderr": ""
+  },
+  "machSelf": {
+    "code": 0,
+    "signal": null,
+    "timedOut": false,
+    "pid": 60104,
+    "records": [
+      {
+        "probe": "mach-footprint-self",
+        "result": 8,
+        "oldLimitMiB": 0,
+        "uid": 501
+      }
+    ],
+    "stderr": ""
+  },
+  "nativeSpawn": {
+    "code": 0,
+    "signal": null,
+    "timedOut": false,
+    "pid": 60105,
+    "records": [
+      {
+        "probe": "spawn-limit",
+        "attributeResult": 0,
+        "limitMiB": 32,
+        "uid": 501
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 0,
+        "usageResult": 0,
+        "rssBytes": 1474560,
+        "footprintBytes": 1048888
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 4,
+        "usageResult": 0,
+        "rssBytes": 5734400,
+        "footprintBytes": 5308728
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 8,
+        "usageResult": 0,
+        "rssBytes": 9945088,
+        "footprintBytes": 9519416
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 12,
+        "usageResult": 0,
+        "rssBytes": 14155776,
+        "footprintBytes": 13746512
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 16,
+        "usageResult": 0,
+        "rssBytes": 18366464,
+        "footprintBytes": 17957200
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 20,
+        "usageResult": 0,
+        "rssBytes": 22577152,
+        "footprintBytes": 22167888
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 24,
+        "usageResult": 0,
+        "rssBytes": 26787840,
+        "footprintBytes": 26378576
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 28,
+        "usageResult": 0,
+        "rssBytes": 30998528,
+        "footprintBytes": 30589264
+      },
+      {
+        "event": "terminal",
+        "exit": -1,
+        "signal": 9
+      }
+    ],
+    "stderr": ""
+  },
+  "nativeSetExec": {
+    "code": null,
+    "signal": "SIGKILL",
+    "timedOut": false,
+    "pid": 60130,
+    "records": [
+      {
+        "event": "allocation",
+        "allocatedMiB": 0,
+        "usageResult": 0,
+        "rssBytes": 1474560,
+        "footprintBytes": 1048888
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 4,
+        "usageResult": 0,
+        "rssBytes": 5734400,
+        "footprintBytes": 5308728
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 8,
+        "usageResult": 0,
+        "rssBytes": 9961472,
+        "footprintBytes": 9552208
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 12,
+        "usageResult": 0,
+        "rssBytes": 14155776,
+        "footprintBytes": 13746512
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 16,
+        "usageResult": 0,
+        "rssBytes": 18382848,
+        "footprintBytes": 17973584
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 20,
+        "usageResult": 0,
+        "rssBytes": 22593536,
+        "footprintBytes": 22184272
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 24,
+        "usageResult": 0,
+        "rssBytes": 26804224,
+        "footprintBytes": 26394960
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 28,
+        "usageResult": 0,
+        "rssBytes": 30998528,
+        "footprintBytes": 30589264
+      }
+    ],
+    "stderr": ""
+  },
+  "nodeBaseline": {
+    "code": 0,
+    "signal": null,
+    "timedOut": false,
+    "pid": 60279,
+    "records": [
+      {
+        "event": "identity",
+        "pid": 60279,
+        "parent": 59424
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 8,
+        "rss": 63995904,
+        "heapTotal": 11141120,
+        "heapUsed": 7837120,
+        "external": 10607576,
+        "arrayBuffers": 8407283
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 16,
+        "rss": 72417280,
+        "heapTotal": 11141120,
+        "heapUsed": 7857448,
+        "external": 18996224,
+        "arrayBuffers": 16795891
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 24,
+        "rss": 80855040,
+        "heapTotal": 11141120,
+        "heapUsed": 7863080,
+        "external": 27384832,
+        "arrayBuffers": 25184499
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 32,
+        "rss": 89276416,
+        "heapTotal": 11141120,
+        "heapUsed": 7868352,
+        "external": 35773440,
+        "arrayBuffers": 33573107
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 40,
+        "rss": 98385920,
+        "heapTotal": 12189696,
+        "heapUsed": 6743904,
+        "external": 44162048,
+        "arrayBuffers": 41961715
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 48,
+        "rss": 106840064,
+        "heapTotal": 12189696,
+        "heapUsed": 6756768,
+        "external": 52550656,
+        "arrayBuffers": 50350323
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 56,
+        "rss": 115261440,
+        "heapTotal": 12189696,
+        "heapUsed": 6768776,
+        "external": 60939264,
+        "arrayBuffers": 58738931
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 64,
+        "rss": 123830272,
+        "heapTotal": 12189696,
+        "heapUsed": 6774328,
+        "external": 69327872,
+        "arrayBuffers": 67127539
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 72,
+        "rss": 132415488,
+        "heapTotal": 11403264,
+        "heapUsed": 6269120,
+        "external": 77716440,
+        "arrayBuffers": 75516107
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 80,
+        "rss": 140853248,
+        "heapTotal": 11403264,
+        "heapUsed": 6276672,
+        "external": 86105048,
+        "arrayBuffers": 83904715
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 88,
+        "rss": 149274624,
+        "heapTotal": 11403264,
+        "heapUsed": 6283128,
+        "external": 94493656,
+        "arrayBuffers": 92293323
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 96,
+        "rss": 157696000,
+        "heapTotal": 11403264,
+        "heapUsed": 6288624,
+        "external": 102882264,
+        "arrayBuffers": 100681931
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 104,
+        "rss": 166133760,
+        "heapTotal": 11403264,
+        "heapUsed": 6284248,
+        "external": 111270872,
+        "arrayBuffers": 109070539
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 112,
+        "rss": 174555136,
+        "heapTotal": 11403264,
+        "heapUsed": 6289584,
+        "external": 119659480,
+        "arrayBuffers": 117459147
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 120,
+        "rss": 182976512,
+        "heapTotal": 11403264,
+        "heapUsed": 6294888,
+        "external": 128048088,
+        "arrayBuffers": 125847755
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 128,
+        "rss": 191397888,
+        "heapTotal": 11403264,
+        "heapUsed": 6300192,
+        "external": 136436696,
+        "arrayBuffers": 134236363
+      }
+    ],
+    "stderr": ""
+  },
+  "nodeLimited": {
+    "code": null,
+    "signal": "SIGKILL",
+    "timedOut": false,
+    "pid": 60307,
+    "records": [
+      {
+        "event": "identity",
+        "pid": 60307,
+        "parent": 59424
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 8,
+        "rss": 64077824,
+        "heapTotal": 11141120,
+        "heapUsed": 7853376,
+        "external": 10607576,
+        "arrayBuffers": 8407283
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 16,
+        "rss": 72499200,
+        "heapTotal": 11141120,
+        "heapUsed": 7873640,
+        "external": 18996224,
+        "arrayBuffers": 16795891
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 24,
+        "rss": 80936960,
+        "heapTotal": 11141120,
+        "heapUsed": 7879272,
+        "external": 27384832,
+        "arrayBuffers": 25184499
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 32,
+        "rss": 89358336,
+        "heapTotal": 11141120,
+        "heapUsed": 7884544,
+        "external": 35773440,
+        "arrayBuffers": 33573107
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 40,
+        "rss": 98467840,
+        "heapTotal": 11927552,
+        "heapUsed": 6743904,
+        "external": 44162048,
+        "arrayBuffers": 41961715
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 48,
+        "rss": 106905600,
+        "heapTotal": 11927552,
+        "heapUsed": 6756768,
+        "external": 52550656,
+        "arrayBuffers": 50350323
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 56,
+        "rss": 115326976,
+        "heapTotal": 11927552,
+        "heapUsed": 6768776,
+        "external": 60939264,
+        "arrayBuffers": 58738931
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 64,
+        "rss": 123961344,
+        "heapTotal": 11927552,
+        "heapUsed": 6774328,
+        "external": 69327872,
+        "arrayBuffers": 67127539
+      },
+      {
+        "event": "allocation",
+        "allocatedMiB": 72,
+        "rss": 132497408,
+        "heapTotal": 11927552,
+        "heapUsed": 6764432,
+        "external": 77716480,
+        "arrayBuffers": 75516147
+      }
+    ],
+    "stderr": ""
+  },
+  "fixtureStderr": [],
+  "initial": {
+    "accepted": true,
+    "executionId": "f2689891-dd5e-4524-9cf4-fd26128b2b62",
+    "kernelEpoch": "cbf5c59b-a29e-4934-bf36-d69e403dc0e7",
+    "status": "completed",
+    "output": [
+      {
+        "type": "value",
+        "value": 42,
+        "itemId": "c88850c8-c26b-415d-91f5-544526db15ca",
+        "executionId": "f2689891-dd5e-4524-9cf4-fd26128b2b62",
+        "seq": 1
+      }
+    ],
+    "bindings": "retained",
+    "warnings": [],
+    "externalCalls": {
+      "pending": 0,
+      "outcome": "none"
+    },
+    "receipts": [],
+    "diagnostics": {
+      "truncated": false,
+      "durationMs": 236,
+      "recovery": [
+        "Continue with a new cell."
+      ]
+    }
+  },
+  "sandbox": {
+    "code": 0,
+    "signal": null,
+    "timedOut": false,
+    "pid": 60429,
+    "records": [
+      {
+        "readDenied": true,
+        "processDenied": true,
+        "networkDenied": true,
+        "pid": 60429,
+        "parent": 59424
+      }
+    ],
+    "stderr": ""
+  },
+  "repl": {
+    "startup": "completed",
+    "pressureStatus": "crashed",
+    "pressureMs": 101.56929100000025,
+    "pressureDiagnostics": {
+      "truncated": false,
+      "durationMs": 102,
+      "recovery": [
+        "Reset to create a new epoch; bindings are lost."
+      ]
+    },
+    "exits": [
+      {
+        "pid": 60372,
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      {
+        "pid": 60486,
+        "code": null,
+        "signal": "SIGKILL"
+      }
+    ],
+    "reset": true,
+    "newEpoch": true,
+    "nextCell": "completed",
+    "launcherAfterSandbox": true
+  },
+  "remainingPids": 0
+}

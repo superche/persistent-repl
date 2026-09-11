@@ -18,6 +18,10 @@ The remaining independent Gate A limitation is process-wide hard RSS enforcement
 
 A macOS memory-limit probe ran in an unrestricted command against its own short-lived process and returned EPERM (errno 1). This rules out Codex filesystem sandboxing for that probe. The Apple XNU implementation gates memorystatus limit-setting on root or a private entitlement; RLIMIT_AS constrains address space, not the requested physical RSS metric. No root helper, entitlement or user system permission was added. See [memory containment evidence](memory-containment.md).
 
+Follow-up testing found a working private spawn SPI for **physical footprint**. The source-only prototype applies the limit after sandbox-exec and proves native/Buffer/kernel termination, reset recovery, preserved sandbox denials and zero remaining PIDs. This corrects any inference that all OS memory-limit paths are unavailable. It is not an instantaneous RSS cap, and it is not yet enabled in the default runtime. The concrete [memory policy proposal](memory-policy-proposal.md) is awaiting the requirement-owner's decision before adoption and final platform regression.
+
+Electron rc.3 revalidation is complete through actual Codex CUA: Run/Stop/Reset/Dispose pass, with exact runtime/package identity checked. The earlier locked-Mac repeat limitation no longer applies. See [UI evidence](evidence/electron-ui.json).
+
 ## Gate B input checklist
 
 - A CuaClient implementation or official SDK/protocol with supported methods, ownership/target/observation fields and original receipts/error codes.

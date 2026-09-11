@@ -62,6 +62,7 @@ Keep `SessionRef`, owner/task/turn/call identity, authorization revisions and ba
 - [Model instructions](docs/model-guide.md)
 - [Deployment, diagnosis, upgrade and rollback](docs/operations.md)
 - [AT01–AT27 coverage and evidence](docs/acceptance.md)
+- [Memory containment evidence and experimental prototype](docs/memory-containment.md)
 - [Gate B inputs and remaining work](docs/handoff.md)
 - [Original requirements](docs/requirements.md)
 - [Dependency inventory and licenses](THIRD_PARTY_LICENSES.md)

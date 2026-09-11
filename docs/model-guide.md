@@ -1,4 +1,4 @@
-# Model tool guide — 0.1.0 / cell-scope 1.0.0
+# Model tool guide — 0.2.0 / cell-scope 1.0.0
 
 Read `repl_docs` for current capabilities. Use `repl_docs({topic:'counter.add'})` or other advertised provider.method names on demand. Docs and pure computation never start device control.
 

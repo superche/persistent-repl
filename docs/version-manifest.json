@@ -1,12 +1,30 @@
 {
   "package": "@superche/persistent-repl",
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "packages": [
+    {
+      "name": "@superche/persistent-repl",
+      "version": "0.2.0"
+    },
+    {
+      "name": "@superche/persistent-repl-cua",
+      "version": "0.2.0"
+    },
+    {
+      "name": "@superche/persistent-repl-mcp",
+      "version": "0.2.0"
+    },
+    {
+      "name": "@superche/persistent-repl-testing",
+      "version": "0.2.0"
+    }
+  ],
   "semantics": "cell-scope/1.0.0",
   "schema": "1.0.0",
   "adapter": "synthetic-cua/1.0.0",
   "quickjsEmscripten": "0.32.0",
   "engineWasmSha256": "105c3bed22d457e43e3d1c3c1c6959fda62a8fe06f0fc8a985303c3a2be72232",
-  "lockSha256": "35665b972f8aef1a5ddf9719ec86e361549185954529c8d854a32b9e01cc3967",
+  "lockSha256": "9101315b000a64a97f851fcbf32d29366ee4dba68848be1077d2b98d81749609",
   "dependencies": [
     {
       "name": "@babel/code-frame",

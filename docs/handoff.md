@@ -1,37 +1,17 @@
-# Handoff and remaining acceptance work
+# Standalone delivery and remaining work
 
-## Delivery scope and gates
+Version 0.2.0 implements the owner's explicit scope change: **“解耦Hi，独立交付和验收”**. The delivery consists of independently packaged Core/CUA/MCP/testing, a reference host, source and locks, a reusable backend contract runner, and `npm run accept`. See [scope.md](scope.md). Hi integration is outside this delivery; there is no pending Hi environment request.
 
-0.1.0 delivers source, public declarations, the supervisor/kernel, generic providers, CUA client adapter/mock, CLI/MCP/Electron examples, test fixtures, benchmarks, dependency inventory and deployment/rollback instructions.
+## Remaining component P0 item
 
-**Gate A is an integration candidate, not fully closed.** The implemented test suite passes, but the remaining P0 items below are not waived. **Gate B is blocked**: the user confirmed on 2026-09-10 that Hi's SDK/model image confirmation/authorized test environment are not yet available, and authorized referring to Codex's existing CUA for tests. Codex CUA was used to operate the real Electron sample. That validates the sample's controls; it is not a Hi backend/model bridge integration.
+R15 / AT13, AT19 and AT27 retain the instantaneous hard-RSS subcase. The default runtime uses the same QuickJS allocation limit, V8 old-space limit and 200 ms RSS watchdog. The successful physical-footprint prototype remains explicit and is not enabled by the scope change. Its metric differs from RSS; [memory-policy-proposal.md](memory-policy-proposal.md) records the pending decision. Automated independence/contract/distribution checks do not waive this condition.
 
-## Remaining P0 items
+Durable host crash recovery is provided by FileRecoveryJournal. A real host configures a persistent directory and stable task identity, then reconciles unknown external actions with its chosen backend. The synthetic examples deliberately omit persistence when their effects disappear with the fixture.
 
-| Item | R / AT | Current behavior | Required completion |
-| --- | --- | --- | --- |
-| Process-wide hard RSS enforcement | R15, AT13/AT19/AT27 | QuickJS allocation cap + Node old-space cap + 200 ms RSS watchdog; no proof of an instantaneous OS hard RSS limit | Validate/freeze a macOS runtime containment strategy and its overshoot budget with the target product configuration, or record an explicitly approved requirement change. |
-| Full production image provenance/consumer integration | R14/R18/R20, AT18/AT24 | PNG validation + mock image/digest/target guard + separate model/preview consumers; model-supplied output metadata never grants authority | Connect real image artifact/provenance and model-observed acknowledgement to the existing model/chat consumers; prove cross-task routing and backpressure in that environment. |
-| Product packaging and target version freeze | R15/R16/R20, AT25/AT26 | Source/npm package plus Electron 44.3.0 development sample; local ad-hoc fixture identity tested | Supply final macOS/architecture/Electron/Node, signing/entitlement constraints and distribution position, then validate the signed product package. |
+## Optional adoption work
 
-The remaining independent Gate A limitation is process-wide hard RSS enforcement and budget agreement. The host-crash component support now ships as `FileRecoveryJournal`: fsync before mutation dispatch, persistent task lease, fail-closed restart, explicit reconciliation, and real SIGKILL tests during external RPC and CPU loop. Product integration must configure a durable directory and stable task identity; ephemeral synthetic examples deliberately omit persistence. Reordered protocol frames, asynchronous callback drain/rejection and module/Promise cases now have executable coverage. Passing these named cases is not a claim of exhaustive sandbox certification. No P0 item has been marked not-applicable.
+Any future host, including Hi, supplies its own identity/authorization, CuaClient driver, model-image delivery/acknowledgement, preview consumer and UI. Those are public extension points rather than dependencies of Core. The driver can first run [backend-conformance.md](backend-conformance.md); actual device actions and model consumption must have separate evidence. Product signing, notarization and release integration belong to the adopting product and do not block the source/npm/reference-host delivery.
 
-A macOS memory-limit probe ran in an unrestricted command against its own short-lived process and returned EPERM (errno 1). This rules out Codex filesystem sandboxing for that probe. The Apple XNU implementation gates memorystatus limit-setting on root or a private entitlement; RLIMIT_AS constrains address space, not the requested physical RSS metric. No root helper, entitlement or user system permission was added. See [memory containment evidence](memory-containment.md).
+Historical rc.3 Electron and rc.4 memory-prototype records are retained with their exact tested revision and synthetic evidence labels. They are not relabeled as tests of changed binaries. Current delivery validation is recorded in [acceptance.md](acceptance.md) and its versioned evidence files.
 
-Follow-up testing found a working private spawn SPI for **physical footprint**. The source-only prototype applies the limit after sandbox-exec and proves native/Buffer/kernel termination, reset recovery, preserved sandbox denials and zero remaining PIDs. This corrects any inference that all OS memory-limit paths are unavailable. It is not an instantaneous RSS cap, and it is not yet enabled in the default runtime. The concrete [memory policy proposal](memory-policy-proposal.md) is awaiting the requirement-owner's decision before adoption and final platform regression.
-
-Electron rc.3 revalidation is complete through actual Codex CUA: Run/Stop/Reset/Dispose pass, with exact runtime/package identity checked. The earlier locked-Mac repeat limitation no longer applies. See [UI evidence](evidence/electron-ui.json).
-
-## Gate B input checklist
-
-- A CuaClient implementation or official SDK/protocol with supported methods, ownership/target/observation fields and original receipts/error codes.
-- A trusted owner/task/turn/call context factory, revision/revocation events, and persistent task/lease recovery policy.
-- Model image delivery + explicit acknowledgement, chat/preview destinations and destination ownership validation.
-- Authorized Browser/Native fixture targets, a real model entrypoint and stop/permission test window.
-- Final runtime/platform/packaging constraints and agreed benchmark reference conditions.
-
-Run the D subcases of AT15, AT18, AT21–AT25 once these are supplied. Preserve per-action receipts and corresponding post-observations; do not replace device proof with screenshots of a tool catalog or an action ACK. Product internal wiring, device drivers and release deployment remain outside this repository.
-
-## Follow-on scope
-
-P1 (not implemented): audio, general file artifacts, yield/wait execution tickets, more module options and memory optimizations. No dates or commercial promises are inferred. Maintenance contact/ownership is the GitHub repository owner `superche` until the receiving team designates an integration contact.
+P1 audio, general artifacts and execution tickets remain outside the implemented scope. Repository ownership remains with superche.

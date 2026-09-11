@@ -4,7 +4,7 @@ import crypto from "node:crypto";
 import { execFileSync } from "node:child_process";
 const lock = JSON.parse(fs.readFileSync("npm-shrinkwrap.json", "utf8"));
 const packages = Object.entries(lock.packages)
-  .filter(([key]) => key.startsWith("node_modules/"))
+  .filter(([key, value]) => key.startsWith("node_modules/") && !value.link)
   .map(([location, p]) => ({
     name: p.name ?? location.split("node_modules/").at(-1),
     version: p.version,
@@ -15,7 +15,7 @@ const packages = Object.entries(lock.packages)
   .sort((a, b) => a.name.localeCompare(b.name));
 fs.writeFileSync(
   "THIRD_PARTY_LICENSES.md",
-  "# Third-party dependency inventory\n\nGenerated from npm-shrinkwrap.json. Runtime and development dependencies are distinguished. Original package license notices ship with their respective installed packages; the npm bundle does not vendor their source. Install from the locked public npm registry artifacts.\n\n| Package | Version | License | Use |\n| --- | --- | --- | --- |\n" +
+  "# Third-party dependency inventory\n\nWorkspace inventory generated from npm-shrinkwrap.json. Runtime and development dependencies are distinguished; each package manifest and the core-only shrinkwrap determine its actual installed dependencies. Original package license notices ship with their respective installed packages; the npm bundle does not vendor their source. Install from the locked public npm registry artifacts.\n\n| Package | Version | License | Use |\n| --- | --- | --- | --- |\n" +
     packages
       .map(
         (p) =>
@@ -28,7 +28,12 @@ const wasm =
   "node_modules/@jitl/quickjs-wasmfile-release-sync/dist/emscripten-module.wasm";
 const manifest = {
   package: "@superche/persistent-repl",
-  version: "0.1.0",
+  version: "0.2.0",
+  packages: ["core", "cua", "mcp", "testing"]
+    .map((name) =>
+      JSON.parse(fs.readFileSync(`packages/${name}/package.json`, "utf8")),
+    )
+    .map(({ name, version }) => ({ name, version })),
   semantics: "cell-scope/1.0.0",
   schema: "1.0.0",
   adapter: "synthetic-cua/1.0.0",

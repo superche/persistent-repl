@@ -1,6 +1,6 @@
 import { randomUUID, createHash } from "node:crypto";
 import { PNG } from "pngjs";
-import type { Json, Cleanup } from "../types.js";
+import type { Json, Cleanup } from "@superche/persistent-repl";
 import type {
   CuaClient,
   CuaContext,
@@ -10,7 +10,7 @@ import type {
   WaiterRef,
   Guard,
   PreviewEvent,
-} from "./types.js";
+} from "@superche/persistent-repl-cua";
 interface Target {
   id: string;
   kind: "browser" | "native";

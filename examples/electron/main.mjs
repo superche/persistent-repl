@@ -1,10 +1,8 @@
+import { MockCuaClient } from "@superche/persistent-repl-testing";
 import { app, BrowserWindow, ipcMain } from "electron";
 import { fileURLToPath } from "node:url";
 import { ReplHost, SEMANTICS_VERSION } from "@superche/persistent-repl";
-import {
-  createCuaProvider,
-  MockCuaClient,
-} from "@superche/persistent-repl/cua";
+import { createCuaProvider } from "@superche/persistent-repl-cua";
 let window,
   session,
   closing = false,

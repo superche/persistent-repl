@@ -1,64 +1,35 @@
 {
-  "name": "@superche/persistent-repl",
-  "version": "0.1.0",
-  "description": "Isolated persistent JavaScript sessions with trusted services and CUA adapters",
+  "name": "persistent-repl-workspace",
+  "private": true,
+  "version": "0.2.0",
   "type": "module",
   "engines": {
     "node": ">=22.19.0 <25"
   },
-  "exports": {
-    ".": "./dist/index.js",
-    "./cua": "./dist/cua/index.js",
-    "./fixtures": "./dist/fixtures/index.js",
-    "./mcp": "./dist/mcp.js"
-  },
-  "bin": {
-    "persistent-repl-mcp": "dist/cli.js"
-  },
-  "files": [
-    "dist",
-    "docs",
-    "examples/*.mjs",
-    "examples/electron/*.*",
-    "LICENSE",
-    "THIRD_PARTY_LICENSES.md",
-    "src",
-    "test",
-    "scripts",
-    "tsconfig.json",
-    "npm-shrinkwrap.json"
+  "workspaces": [
+    "packages/*",
+    "examples/electron"
   ],
   "scripts": {
-    "build": "tsc && cp src/kernel/bootstrap.js dist/kernel/bootstrap.js",
-    "test": "npm run build && node --test test/*.test.mjs",
+    "build": "node scripts/build.mjs",
+    "test:core": "node --test test/semantics.test.mjs test/host.test.mjs test/protocol.test.mjs test/recovery.test.mjs",
+    "test:cua": "node --test test/cua.test.mjs test/conformance.test.mjs",
+    "test:mcp": "node --test test/mcp.test.mjs",
+    "test": "npm run build && npm run test:core && npm run test:cua && npm run test:mcp",
+    "check:boundaries": "node scripts/check-boundaries.mjs",
+    "check": "npm test && npm run check:boundaries && npm run demo && npm run demo:cua && npm run demo:mcp && npm run demo:contract",
     "demo": "node examples/generic.mjs",
     "demo:cua": "node examples/cua.mjs",
     "demo:mcp": "node examples/mcp-client.mjs",
-    "bench": "node scripts/bench.mjs",
-    "check": "npm test && npm run demo && npm run demo:cua && npm run demo:mcp",
     "demo:electron": "electron examples/electron",
-    "format": "prettier --write src test examples scripts",
-    "format:check": "prettier --check src test examples scripts",
-    "test:package": "node --test test/*.test.mjs",
-    "inventory": "node scripts/inventory.mjs"
-  },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/superche/persistent-repl.git"
-  },
-  "dependencies": {
-    "@babel/core": "8.0.1",
-    "@babel/generator": "8.0.0",
-    "@babel/parser": "8.0.4",
-    "@babel/plugin-transform-async-to-generator": "8.0.1",
-    "@babel/traverse": "8.0.4",
-    "@babel/types": "8.0.4",
-    "@jridgewell/trace-mapping": "0.3.31",
-    "@modelcontextprotocol/sdk": "1.30.0",
-    "ajv": "8.20.0",
-    "pngjs": "7.0.0",
-    "quickjs-emscripten": "0.32.0"
+    "bench": "node scripts/bench.mjs",
+    "pack:all": "node scripts/pack.mjs",
+    "verify:packages": "node scripts/verify-packages.mjs",
+    "accept": "node scripts/accept.mjs",
+    "inventory": "node scripts/inventory.mjs",
+    "format": "prettier --write packages/*/src test examples scripts",
+    "format:check": "prettier --check packages/*/src test examples scripts",
+    "demo:contract": "node examples/backend-contract.mjs"
   },
   "devDependencies": {
     "@types/babel__core": "7.20.5",

@@ -1,4 +1,4 @@
-import type { Cleanup, HandlerContext, Json } from "../types.js";
+import type { Cleanup, HandlerContext, Json } from "@superche/persistent-repl";
 export interface TargetRef {
   id: string;
   kind: "browser" | "native";

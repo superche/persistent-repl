@@ -7,8 +7,12 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { Ajv } from "ajv";
 import { randomUUID } from "node:crypto";
-import { ReplHost } from "./host.js";
-import { VERSION, type SessionRef, type TrustedCallContext } from "./types.js";
+import { ReplHost } from "@superche/persistent-repl";
+import {
+  VERSION,
+  type SessionRef,
+  type TrustedCallContext,
+} from "@superche/persistent-repl";
 const schemas = {
   repl_exec: {
     type: "object",

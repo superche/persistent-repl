@@ -1,0 +1,41 @@
+{
+  "pass": true,
+  "version": "0.2.0",
+  "checks": [
+    {
+      "check": "bundle-install",
+      "pass": true
+    },
+    {
+      "check": "bundle-tests",
+      "pass": true
+    },
+    {
+      "check": "generic",
+      "pass": true
+    },
+    {
+      "check": "cua",
+      "pass": true
+    },
+    {
+      "check": "mcp",
+      "pass": true
+    },
+    {
+      "check": "backend-contract",
+      "pass": true
+    },
+    {
+      "check": "core-only-install",
+      "pass": true
+    },
+    {
+      "check": "core-only-execution",
+      "pass": true
+    }
+  ],
+  "noHiEnvironment": true,
+  "coreOnly": "no CUA/MCP/testing/Electron packages installed",
+  "memoryHardRss": "not closed; unchanged policy"
+}

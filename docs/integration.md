@@ -35,7 +35,7 @@ Module registration takes `{name,version,license,source,kind,reload}`. Workspace
 
 ## CUA client contract
 
-Import `CuaClient`, `TargetRef`, `Observation`, `Guard`, `CuaReceipt`, `WaiterRef` and `PreviewEvent` from `@superche/persistent-repl/cua`. Supply one client instance to `createCuaProvider(client)`. The existing action tool can invoke this same client interface.
+Import `CuaClient`, `TargetRef`, `Observation`, `Guard`, `CuaReceipt`, `WaiterRef` and `PreviewEvent` from `@superche/persistent-repl-cua`. Supply one client instance to `createCuaProvider(client)`. The existing action tool can invoke this same client interface.
 
 The client implements discover/acquire/invoke, arm/awaitWait/cancelWait, release/stop/finish and cleanupSession. It owns real target identities, leases, write serialization, capability support, observation revisions/TTL, input release and effect verification. A real client must not trust caller-provided target ID/guard without checking the ownership in the invocation context. Backends must reject partial/unknown input until reconciled.
 
@@ -43,13 +43,13 @@ The facade provides `cua.getState`, `getTab`, `getBrowser`, `getApp`, `createTab
 
 ## Two image channels
 
-`TrustedSessionConfig.onOutput` is model task output. `MockCuaClient(onPreview)` demonstrates a separate product preview/lifecycle consumer carrying owner/task/session/target. Production clients should provide an equivalent callback. The Electron example routes them to separate UI sections.
+`TrustedSessionConfig.onOutput` is model task output. `MockCuaClient(onPreview)` from the testing package demonstrates a separate product preview/lifecycle consumer carrying owner/task/session/target. Production clients should provide an equivalent callback. The Electron example routes them to separate UI sections.
 
 PNG output does not grant visual input permission. The mock's `acknowledgeModelImage` is a synthetic trusted bridge method, not a model service. A real model bridge must acknowledge image consumption only when the image actually entered the intended model context. Preview display and retained bytes do not satisfy that condition. Backend invoke validates image ID, digest, observation and target; callers cannot reuse a screenshot for another resource.
 
 ## MCP
 
-`persistent-repl-mcp` exposes repl_exec/reset/docs/status/cancel. A transport owns one host-bound session. The supplied CLI installs only the synthetic counter. `createMcpServer` embeds the same supervisor in a product transport with a host context factory. stdout contains protocol only. Input buffering is capped at 8 MB; code has a separate 64 KiB check. Request-ID deduplication maps to host-generated call keys for the transport lifetime. Cancellation signals invoke the same cancel path; EOF closes the host. Unsupported tool/argument errors are protocol errors; accepted cell failures are tool results with `isError` and structured receipts.
+`persistent-repl-mcp` exposes repl_exec/reset/docs/status/cancel. A transport owns one host-bound session. The supplied CLI installs no external providers; synthetic counters live in the separate testing package. `createMcpServer` embeds the same supervisor in a product transport with a host context factory. stdout contains protocol only. Input buffering is capped at 8 MB; code has a separate 64 KiB check. Request-ID deduplication maps to host-generated call keys for the transport lifetime. Cancellation signals invoke the same cancel path; EOF closes the host. Unsupported tool/argument errors are protocol errors; accepted cell failures are tool results with `isError` and structured receipts.
 
 Tested negotiation is 2025-11-25. The SDK can negotiate older versions, but older-version projection is not yet an acceptance claim.
 

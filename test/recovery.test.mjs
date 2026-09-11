@@ -10,7 +10,7 @@ import {
   ReplHost,
   SEMANTICS_VERSION,
 } from "@superche/persistent-repl";
-import { createCounterProvider } from "@superche/persistent-repl/fixtures";
+import { createCounterProvider } from "@superche/persistent-repl-testing";
 const base = {
   ownerKey: "fixture",
   taskKey: "durable-task",

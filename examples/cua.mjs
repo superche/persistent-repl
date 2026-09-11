@@ -1,9 +1,7 @@
+import { MockCuaClient } from "@superche/persistent-repl-testing";
 import assert from "node:assert/strict";
 import { ReplHost, SEMANTICS_VERSION } from "@superche/persistent-repl";
-import {
-  createCuaProvider,
-  MockCuaClient,
-} from "@superche/persistent-repl/cua";
+import { createCuaProvider } from "@superche/persistent-repl-cua";
 const previews = [],
   model = [];
 const client = new MockCuaClient((e) => previews.push(e));

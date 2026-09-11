@@ -4,3 +4,4 @@ dist/
 work/
 .DS_Store
 examples/electron/node_modules/
+artifacts/

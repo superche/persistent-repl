@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { EventEmitter } from "node:events";
 import { PassThrough } from "node:stream";
 import { ReplHost, SEMANTICS_VERSION } from "@superche/persistent-repl";
-import { createCounterProvider } from "@superche/persistent-repl/fixtures";
+import { createCounterProvider } from "@superche/persistent-repl-testing";
 function fakeSpawner(script) {
   return () => {
     const child = new EventEmitter();

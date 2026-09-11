@@ -1,0 +1,34 @@
+{
+  "scope": "standalone component and adapters",
+  "hiIntegration": "excluded by user instruction: 解耦Hi，独立交付和验收",
+  "started": "2026-09-11T03:38:39.298Z",
+  "node": "v22.19.0",
+  "platform": "darwin",
+  "arch": "arm64",
+  "release": "25.5.0",
+  "checks": [
+    {
+      "name": "source-and-contracts",
+      "pass": true
+    },
+    {
+      "name": "lifecycle-benchmark",
+      "pass": true
+    },
+    {
+      "name": "distribution",
+      "pass": true
+    },
+    {
+      "name": "clean-install-and-core-isolation",
+      "pass": true
+    }
+  ],
+  "backendEvidence": "synthetic contract fixtures; no Hi or device/model integration claim",
+  "remainingP0": [
+    "R15 / AT13, AT19, AT27: instantaneous hard RSS contract is unresolved; this scope change does not approve the footprint proposal"
+  ],
+  "finished": "2026-09-11T03:40:05.165Z",
+  "automatedAcceptance": "pass",
+  "fullP0Acceptance": "not-closed"
+}

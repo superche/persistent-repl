@@ -1,10 +1,8 @@
+import { MockCuaClient } from "@superche/persistent-repl-testing";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { fixture, values } from "./helpers.mjs";
-import {
-  createCuaProvider,
-  MockCuaClient,
-} from "@superche/persistent-repl/cua";
+import { createCuaProvider } from "@superche/persistent-repl-cua";
 async function setup(t) {
   const previews = [],
     model = [];

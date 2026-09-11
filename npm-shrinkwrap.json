@@ -1,29 +1,16 @@
 {
-  "name": "@superche/persistent-repl",
-  "version": "0.1.0",
+  "name": "persistent-repl-workspace",
+  "version": "0.2.0",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "@superche/persistent-repl",
-      "version": "0.1.0",
-      "license": "MIT",
-      "dependencies": {
-        "@babel/core": "8.0.1",
-        "@babel/generator": "8.0.0",
-        "@babel/parser": "8.0.4",
-        "@babel/plugin-transform-async-to-generator": "8.0.1",
-        "@babel/traverse": "8.0.4",
-        "@babel/types": "8.0.4",
-        "@jridgewell/trace-mapping": "0.3.31",
-        "@modelcontextprotocol/sdk": "1.30.0",
-        "ajv": "8.20.0",
-        "pngjs": "7.0.0",
-        "quickjs-emscripten": "0.32.0"
-      },
-      "bin": {
-        "persistent-repl-mcp": "dist/cli.js"
-      },
+      "name": "persistent-repl-workspace",
+      "version": "0.2.0",
+      "workspaces": [
+        "packages/*",
+        "examples/electron"
+      ],
       "devDependencies": {
         "@types/babel__core": "7.20.5",
         "@types/babel__generator": "7.27.0",
@@ -36,6 +23,15 @@
       },
       "engines": {
         "node": ">=22.19.0 <25"
+      }
+    },
+    "examples/electron": {
+      "name": "@superche/persistent-repl-reference-host",
+      "version": "0.2.0",
+      "dependencies": {
+        "@superche/persistent-repl": "0.2.0",
+        "@superche/persistent-repl-cua": "0.2.0",
+        "@superche/persistent-repl-testing": "0.2.0"
       }
     },
     "node_modules/@babel/code-frame": {
@@ -477,6 +473,26 @@
           "optional": false
         }
       }
+    },
+    "node_modules/@superche/persistent-repl": {
+      "resolved": "packages/core",
+      "link": true
+    },
+    "node_modules/@superche/persistent-repl-cua": {
+      "resolved": "packages/cua",
+      "link": true
+    },
+    "node_modules/@superche/persistent-repl-mcp": {
+      "resolved": "packages/mcp",
+      "link": true
+    },
+    "node_modules/@superche/persistent-repl-reference-host": {
+      "resolved": "examples/electron",
+      "link": true
+    },
+    "node_modules/@superche/persistent-repl-testing": {
+      "resolved": "packages/testing",
+      "link": true
     },
     "node_modules/@types/babel__core": {
       "version": "7.20.5",
@@ -2597,6 +2613,70 @@
       "license": "ISC",
       "peerDependencies": {
         "zod": "^3.25.28 || ^4"
+      }
+    },
+    "packages/core": {
+      "name": "@superche/persistent-repl",
+      "version": "0.2.0",
+      "license": "MIT",
+      "dependencies": {
+        "@babel/core": "8.0.1",
+        "@babel/generator": "8.0.0",
+        "@babel/parser": "8.0.4",
+        "@babel/plugin-transform-async-to-generator": "8.0.1",
+        "@babel/traverse": "8.0.4",
+        "@babel/types": "8.0.4",
+        "@jridgewell/trace-mapping": "0.3.31",
+        "ajv": "8.20.0",
+        "pngjs": "7.0.0",
+        "quickjs-emscripten": "0.32.0"
+      },
+      "engines": {
+        "node": ">=22.19.0 <25"
+      }
+    },
+    "packages/cua": {
+      "name": "@superche/persistent-repl-cua",
+      "version": "0.2.0",
+      "license": "MIT",
+      "engines": {
+        "node": ">=22.19.0 <25"
+      },
+      "peerDependencies": {
+        "@superche/persistent-repl": "0.2.0"
+      }
+    },
+    "packages/mcp": {
+      "name": "@superche/persistent-repl-mcp",
+      "version": "0.2.0",
+      "license": "MIT",
+      "dependencies": {
+        "@modelcontextprotocol/sdk": "1.30.0",
+        "ajv": "8.20.0"
+      },
+      "bin": {
+        "persistent-repl-mcp": "dist/cli.js"
+      },
+      "engines": {
+        "node": ">=22.19.0 <25"
+      },
+      "peerDependencies": {
+        "@superche/persistent-repl": "0.2.0"
+      }
+    },
+    "packages/testing": {
+      "name": "@superche/persistent-repl-testing",
+      "version": "0.2.0",
+      "license": "MIT",
+      "dependencies": {
+        "pngjs": "7.0.0"
+      },
+      "engines": {
+        "node": ">=22.19.0 <25"
+      },
+      "peerDependencies": {
+        "@superche/persistent-repl": "0.2.0",
+        "@superche/persistent-repl-cua": "0.2.0"
       }
     }
   }

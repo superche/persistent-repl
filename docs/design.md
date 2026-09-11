@@ -1,8 +1,8 @@
-# Technical design — 0.1.0
+# Technical design — 0.2.0
 
 ## Boundaries and version set
 
-Core/supervisor/SDK: `@superche/persistent-repl@0.1.0`. Semantics: `cell-scope/1.0.0`. Schema: `1.0.0`. Engine: `quickjs-emscripten@0.32.0`, pinned WASM artifact and dependencies in `npm-shrinkwrap.json`. CUA fixture contract: `synthetic-cua/1.0.0`. MCP SDK: `1.30.0`; tested negotiation: `2025-11-25`. Electron development fixture: `44.3.0`.
+Core/supervisor/SDK: `@superche/persistent-repl@0.2.0`. Semantics: `cell-scope/1.0.0`. Schema: `1.0.0`. Engine: `quickjs-emscripten@0.32.0`, pinned WASM artifact and dependencies in `npm-shrinkwrap.json`. CUA fixture contract: `synthetic-cua/1.0.0`. MCP SDK: `1.30.0`; tested negotiation: `2025-11-25`. Electron development fixture: `44.3.0`.
 
 ```mermaid
 flowchart LR

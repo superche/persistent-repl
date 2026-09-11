@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.19.0 <25"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/superche/persistent-repl.git"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_LICENSES.md"
+  ],
+  "name": "@superche/persistent-repl-cua",
+  "description": "Backend-neutral CUA provider for persistent REPL",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "peerDependencies": {
+    "@superche/persistent-repl": "0.2.0"
+  }
+}

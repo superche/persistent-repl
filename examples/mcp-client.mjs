@@ -9,7 +9,9 @@ const client = new Client(
 );
 const transport = new StdioClientTransport({
   command: process.execPath,
-  args: [fileURLToPath(new URL("../dist/cli.js", import.meta.url))],
+  args: [
+    fileURLToPath(import.meta.resolve("@superche/persistent-repl-mcp/cli")),
+  ],
   stderr: "pipe",
 });
 try {
@@ -18,7 +20,7 @@ try {
   assert.equal(tools.tools.length, 5);
   await client.callTool({
     name: "repl_exec",
-    arguments: { code: "let n=await services.counter.add({amount:2});" },
+    arguments: { code: "let n=2;" },
   });
   const r = await client.callTool({
     name: "repl_exec",

@@ -1,4 +1,4 @@
-export const VERSION = "0.1.0";
+export const VERSION = "0.2.0";
 export const SEMANTICS_VERSION = "cell-scope/1.0.0";
 export const SCHEMA_VERSION = "1.0.0";
 export type Json =

@@ -1,6 +1,6 @@
 {
-  "name": "persistent-repl-electron-example",
-  "version": "0.1.0",
+  "name": "@superche/persistent-repl-reference-host",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "main": "main.mjs",
@@ -8,6 +8,8 @@
     "start": "electron ."
   },
   "dependencies": {
-    "@superche/persistent-repl": "file:../.."
+    "@superche/persistent-repl": "0.2.0",
+    "@superche/persistent-repl-cua": "0.2.0",
+    "@superche/persistent-repl-testing": "0.2.0"
   }
 }

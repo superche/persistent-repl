@@ -1,5 +1,5 @@
 import { ReplHost, SEMANTICS_VERSION } from "@superche/persistent-repl";
-import { createCounterProvider } from "@superche/persistent-repl/fixtures";
+import { createCounterProvider } from "@superche/persistent-repl-testing";
 const host = new ReplHost();
 const { provider } = createCounterProvider();
 const session = await host.create({

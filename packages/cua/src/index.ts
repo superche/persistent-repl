@@ -3,10 +3,9 @@ import type {
   MethodDefinition,
   HandlerContext,
   Json,
-} from "../types.js";
+} from "@superche/persistent-repl";
 import type { CuaClient, TargetRef, CuaContext, WaiterRef } from "./types.js";
 export * from "./types.js";
-export { MockCuaClient } from "./mock.js";
 const empty = { type: "object", additionalProperties: false };
 const result = {};
 export function createCuaProvider(client: CuaClient): ServiceProvider {

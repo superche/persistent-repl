@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 test("AT09 MCP wire duplicate request IDs do not repeat code effects; EOF reaps kernel", async (t) => {
   const child = spawn(
     process.execPath,
-    [fileURLToPath(new URL("../dist/cli.js", import.meta.url))],
+    [fileURLToPath(import.meta.resolve("@superche/persistent-repl-mcp/cli"))],
     { stdio: ["pipe", "pipe", "pipe"] },
   );
   t.after(() => child.kill());
@@ -45,7 +45,9 @@ test("AT09 MCP wire duplicate request IDs do not repeat code effects; EOF reaps 
     method: "tools/call",
     params: {
       name: "repl_exec",
-      arguments: { code: "await services.counter.add({amount:1});" },
+      arguments: {
+        code: "var count = (typeof count === 'undefined' ? 0 : count) + 1;",
+      },
     },
   };
   send(call);
@@ -58,7 +60,7 @@ test("AT09 MCP wire duplicate request IDs do not repeat code effects; EOF reaps 
     method: "tools/call",
     params: {
       name: "repl_exec",
-      arguments: { code: "output.value(await services.counter.read());" },
+      arguments: { code: "output.value(count);" },
     },
   });
   assert.equal((await receive(3)).result.structuredContent.output[0].value, 1);

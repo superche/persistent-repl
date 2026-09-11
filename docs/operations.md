@@ -4,13 +4,15 @@
 
 `npm ci && npm run check` builds TypeScript, runs semantic/security/service/CUA tests, then generic/CUA/MCP examples. `npm run bench` measures 200 warm parallel pairs, 30 cold starts, 2,000 total cells and 100 create/reset/dispose cycles. Every benchmark target is synthetic.
 
-`npm pack` produces the distributable library. Install that tarball in a separate directory and run imports via package exports. Runtime dependencies are pinned; the package does not require private Hi/Codex code. The `examples/electron` app declares the library through its public package. In a source checkout run `npm install --prefix examples/electron` once; the Electron development binary comes from root dev dependencies. An installed tarball consumer supplies its own Electron version and host app.
+`npm run accept` is the standalone acceptance entrypoint. `npm run pack:all` produces four package tarballs and a consumer shrinkwrap under artifacts/0.2.0. `npm run verify:packages` tests a clean bundle installation and an isolated Core-only consumer outside the checkout. The source workspace lock and Core-only shrinkwrap retain pinned public registry integrities.
+
+For the Electron reference app, run `npm ci` at workspace root and `npm run demo:electron`. The sample consumes public Core/CUA/testing packages; it is a synthetic reference host with separate model-output and preview consumers. It requires no product SDK or model credential. A bundle consumer supplies Electron 44.3.0 or runs from the source workspace.
 
 ## macOS Electron packaging
 
 Model JS always runs in a separately terminable child. The development sample can use Electron's embedded Node via `ELECTRON_RUN_AS_NODE=1`; the supervisor supplies that environment flag only when its parent is Electron. A production bundle can instead configure a bundled Node executable with the **host-only** PERSISTENT_REPL_NODE setting. The runtime and kernel assets must be unpacked from ASAR; package/WASM paths must resolve to real files visible to the Seatbelt profile.
 
-Validate the chosen Electron/Node build, arm64/x64 architecture, entitlements, framework read locations and child startup before adoption. The project includes a local ad-hoc signed fixture procedure for stable CUA app identity; it is **not** a Developer ID signed, notarized or distribution-approved app. Production signing/notarization and final Hi packaging need the product's bundle/signing inputs. No signed production release is claimed.
+Validate the chosen Electron/Node build, arm64/x64 architecture, entitlements, framework read locations and child startup before adoption. The project includes a local ad-hoc signed fixture procedure for stable CUA app identity; it is **not** a Developer ID signed, notarized or distribution-approved app. Product-specific signing/notarization belongs to the adopting application and is outside the approved standalone delivery. No signed production release is claimed.
 
 The current profile allows runtime/bundle/system-library reads, root directory access needed by dyld, metadata, sysctl and mach lookup. It denies general data reads outside those paths, writes, sockets and child process creation. Do not broaden it to the user's home directory to fix a package path error. Resolve the exact runtime path instead. No sandbox fallback is used on macOS. Non-macOS requires an explicit fixture-only environment switch and is outside production support.
 

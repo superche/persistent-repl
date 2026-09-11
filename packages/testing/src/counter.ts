@@ -3,7 +3,7 @@ import type {
   Json,
   HandlerContext,
   Cleanup,
-} from "../types.js";
+} from "@superche/persistent-repl";
 const object = { type: "object", additionalProperties: false };
 export const PNG_BASE64 =
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLttAAAAABJRU5ErkJggg==";

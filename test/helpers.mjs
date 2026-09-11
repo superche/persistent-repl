@@ -1,5 +1,5 @@
 import { ReplHost, SEMANTICS_VERSION } from "@superche/persistent-repl";
-import { createCounterProvider } from "@superche/persistent-repl/fixtures";
+import { createCounterProvider } from "@superche/persistent-repl-testing";
 export async function fixture(t, extra = {}) {
   const host = new ReplHost();
   t.after(() => host.close());

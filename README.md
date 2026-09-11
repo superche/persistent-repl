@@ -1,70 +1,84 @@
-# Persistent REPL + CUA
+# Persistent REPL — standalone SDK and adapters
 
-A persistent JavaScript component for local agent/Electron hosts. The core runs independently of CUA. A separate adapter wraps an injected browser/native capability client; a synthetic backend is included.
+Version **0.2.0**. Host-independent persistent JavaScript execution with an isolated kernel, typed services, CUA and MCP adapters. The user approved independent delivery and acceptance on 2026-09-11: **“解耦Hi，独立交付和验收”**. No Hi repository, account, SDK or model endpoint is needed to install, run or test this project. See [scope](docs/scope.md).
 
-**Delivery version: 0.1.0.** This is an independently runnable implementation and integration candidate. See [acceptance](docs/acceptance.md) for measured coverage and remaining P0 acceptance work. Hi production integration is blocked on the interfaces/environment listed in [handoff](docs/handoff.md); mock results do not establish Gate B completion.
+## Packages
 
-## Run
+| Package | Purpose | Required project peers |
+| --- | --- | --- |
+| `@superche/persistent-repl` | Core, SDK, isolation, recovery, typed services | None |
+| `@superche/persistent-repl-cua` | Backend-neutral `CuaClient` and provider | Core |
+| `@superche/persistent-repl-mcp` | MCP embedding and generic stdio CLI | Core |
+| `@superche/persistent-repl-testing` | Synthetic counter/CUA fixtures and backend contract harness | Core + CUA |
 
-macOS arm64, Node 22.19.0 (also validate your embedding runtime before distribution):
+Core does not install the CUA/MCP/testing packages, MCP SDK or Electron. The independent Electron reference host lives in `examples/electron`; it consumes public packages and synthetic test support. Device drivers and product adapters can be supplied by any host.
+
+## Reproduce from source
 
 ```sh
 npm ci
-npm run check
-npm run bench
-npm install --prefix examples/electron
-npm run demo:electron
+npm run accept
 ```
 
-The three entry points are `examples/generic.mjs`, `examples/mcp-client.mjs` (starts the real stdio MCP server/client), and `examples/electron`. `npm run demo:cua` demonstrates Browser → Native → the original Browser using the synthetic backend. No device permissions or API credentials are needed for these fixtures.
+This builds and tests every package, checks dependency direction, runs SDK/CUA/MCP/backend-contract examples, measures lifecycle/performance, packs four tarballs, and tests both a clean bundle installation and a Core-only installation outside the checkout. Results and logs are under `artifacts/`. macOS is required for the supported Seatbelt isolation path. Node 22.19.0 and 24.18.0 are the CI reference versions.
 
-## Public SDK
+The automated checks can pass while **full P0 memory acceptance remains open**: the current RSS watchdog is not an instantaneous process RSS cap. Decoupling Hi does not approve the experimental footprint alternative. See [acceptance](docs/acceptance.md) and [remaining work](docs/handoff.md).
+
+## Run a delivered bundle
+
+Unzip the standalone delivery bundle, then:
+
+```sh
+npm ci
+npm test
+npm run demo:core
+npm run demo:cua
+npm run demo:mcp
+npm run demo:contract
+```
+
+The bundle contains four local `.tgz` dependencies and its own `npm-shrinkwrap.json`; private package publication is unnecessary. Third-party dependencies resolve through the public npm registry. To install only Core in another project, use `npm install /path/to/superche-persistent-repl-0.2.0.tgz`. Adapters are optional and require the matching Core peer. See [migration from 0.1](docs/migration-0.2.md).
+
+## Minimal Core example
 
 ```js
 import { ReplHost, SEMANTICS_VERSION } from '@superche/persistent-repl';
-import { createCounterProvider } from '@superche/persistent-repl/fixtures';
-
 const host = new ReplHost();
 const session = await host.create({
-  ownerKey: 'trusted-user', taskKey: 'trusted-task',
+  ownerKey: 'local-user', taskKey: 'task-1',
   semanticsVersion: SEMANTICS_VERSION,
-  capabilityRevision: 'counter/1', authorizationRevision: 'auth/1',
-  providers: [createCounterProvider().provider],
-  authorize: () => true, // Synthetic example. Product hosts supply their own policy.
+  capabilityRevision: '1', authorizationRevision: '1',
+  authorize: () => true, // Reference application; replace with your host policy.
 });
-const context = callKey => ({
-  ownerKey: 'trusted-user', taskKey: 'trusted-task', turnKey: 'turn/1',
-  callKey, authorizationRevision: 'auth/1',
+const context = (callKey) => ({
+  ownerKey: 'local-user', taskKey: 'task-1', turnKey: 'turn-1',
+  callKey, authorizationRevision: '1',
 });
-await host.execute(session, { code: 'let count = 1;' }, context('call/1'));
-const result = await host.execute(session, {
-  code: 'count += await services.counter.add({amount: 2}); output.value(count);',
-}, context('call/2'));
-console.log(result);
-await host.close();
+try {
+  await host.execute(session, { code: 'let n=40;' }, context('1'));
+  const result = await host.execute(session, { code: 'n+=2; output.value(n);' }, context('2'));
+  console.log(result.output);
+} finally {
+  await host.close();
+}
 ```
 
-Keep `SessionRef`, owner/task/turn/call identity, authorization revisions and backend endpoints inside the trusted host. The model supplies only code and bounded execution options. Provider registration includes JSON schemas, handlers, documentation and cleanup. Public TypeScript declarations ship in the package.
+Host identity, authorization, backend connections and image consumers are injected by trusted host code. The kernel cannot select credentials or grant itself authority. Unknown external effects require host reconciliation; reset does not roll back device actions. Configure `FileRecoveryJournal` for host tasks that persist real effects across restarts.
 
-## Important behavior
+## Reference host and backend contract
 
-- Each cell has its own lexical environment. Old closures keep their scalar bindings; object identity/mutations are shared. The exact R03/R04 examples are executable tests.
-- Output is explicit: `output.text`, `output.value`, `output.image(base64, 'image/png')`. There is no implicit last-expression re-evaluation.
-- Code runs in a QuickJS/WASM kernel inside a separately terminable process. macOS Seatbelt restricts that process. There is no Node `vm` security claim, guest process/env/fs/network/shell, automatic npm installation, or backend driver inside core.
-- `cancel` stops code and may discard the kernel. `reset` creates a lazy new epoch and revokes resources. `cua.stop` ends external control. `dispose` ends the REPL session. None rolls back an OS effect.
-- External receipts survive caught errors. Unknown effects block continuation until the **trusted host** reconciles them. Resumable product tasks configure `FileRecoveryJournal` for durable intent and crash/restart barriers.
-- The fixture CLI exposes a synthetic counter only. The product supplies its own providers/authentication; this package does not turn on a public network server.
+From the source workspace, `npm run demo:electron` opens the Electron reference host. Its Model output and Host preview are separate consumers; the backend is explicitly synthetic. `npm run demo:contract` runs the reusable acquisition/lifecycle contract. To test a different backend: `node examples/backend-contract.mjs /absolute/path/to/owned-fixture.mjs`. See [backend conformance](docs/backend-conformance.md). Device action and model-image-consumption verification must report their own evidence; the mock does not certify them.
 
 ## Documentation
 
-- [Design, semantics, state machine and limits](docs/design.md)
-- [Host/service and CUA integration](docs/integration.md)
-- [Model instructions](docs/model-guide.md)
-- [Deployment, diagnosis, upgrade and rollback](docs/operations.md)
-- [AT01–AT27 coverage and evidence](docs/acceptance.md)
-- [Memory containment evidence and experimental prototype](docs/memory-containment.md)
-- [Gate B inputs and remaining work](docs/handoff.md)
-- [Original requirements](docs/requirements.md)
-- [Dependency inventory and licenses](THIRD_PARTY_LICENSES.md)
+- [Approved scope and independence boundaries](docs/scope.md)
+- [Design and semantics](docs/design.md)
+- [SDK/provider/CUA integration](docs/integration.md)
+- [Model tool guide](docs/model-guide.md)
+- [Build, deployment and rollback](docs/operations.md)
+- [AT01–AT27 and verification evidence](docs/acceptance.md)
+- [Memory containment and prototype](docs/memory-containment.md)
+- [Original attachment, preserved](docs/requirements.md)
+- [Third-party inventory](THIRD_PARTY_LICENSES.md)
 
-MIT licensed. No Codex private source or Hi private implementation is included.
+MIT licensed. No Hi or Codex private implementation is included.

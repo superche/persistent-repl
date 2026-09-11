@@ -1,19 +1,20 @@
-# Acceptance evidence — 0.1.0 integration candidate
+# Acceptance evidence — 0.2.0 standalone delivery
 
-Evidence date: 2026-09-11 (Asia/Shanghai). The final local automated suite passed 53 tests, followed by all three generic/CUA/MCP examples. All automated target/service data is synthetic. Environment: macOS arm64, Darwin 25.5.0 / Apple M5 Pro, Node 22.19.0. Electron UI fixture: 44.3.0. Versions/integrity: [version-manifest.json](version-manifest.json). Source revision: the Git commit carrying this report (release tag identifies the exact tree).
+Evidence date: 2026-09-11 (Asia/Shanghai). The final local automated suite passed 54 tests, followed by generic/CUA/MCP/backend-contract examples. All automated target/service data is synthetic. Environment: macOS arm64, Darwin 25.5.0 / Apple M5 Pro, Node 22.19.0. Electron UI fixture: 44.3.0. Versions/integrity: [version-manifest.json](version-manifest.json). Source revision: the Git commit carrying this report (release tag identifies the exact tree).
 
-**Gate A: not fully closed. Gate B: blocked.** Passing tests establish the named cases below, not an unconditional P0 acceptance claim. Remaining items are tracked in [handoff.md](handoff.md). `not-run` rows explicitly list covered portions and missing subcases. No P0 waiver is implied.
+**Standalone automated acceptance is independent of Hi. Full component P0 acceptance remains open only for the hard-RSS subcase.** Hi-specific integration is outside the owner-approved [scope](scope.md), not a prerequisite or a passed result. Passing tests establish the named cases below, not an unconditional P0 acceptance claim. Remaining items are tracked in [handoff.md](handoff.md). `not-run` rows explicitly list covered portions and missing subcases. No P0 waiver is implied.
 
 ## Reproduction commands
 
-- `npm ci && npm run check`: compile + node:test + generic demo + CUA demo + real MCP client.
+- `npm ci && npm run accept`: build, 54 source tests, package-boundary checks, four examples, benchmark, four tarballs, clean bundle tests and Core-only install/execution. Machine-readable report: `artifacts/acceptance.json`; logs retain individual phase results.
+- `npm run test:core`, `npm run test:cua`, `npm run test:mcp`: independently runnable suites after build.
 - `npm run bench`: 200 warm pairs, 30 cold starts, 2,000 cells in two sessions, 100 lifecycle cycles and child-PID check.
-- `npm pack`: build artifact. Install the tarball in a clean directory, then run its generic and CUA examples through public package imports.
-- `npm install --prefix examples/electron && npm run demo:electron`: actual macOS window and controls. CUA evidence described below is a manual execution record, not a CI claim.
+- `npm run pack:all`: four package artifacts plus a consumer shrinkwrap. `npm run verify:packages`: install into temporary directories outside the source checkout and verify runtime/dependency separation.
+- `npm run demo:electron`: actual macOS window and controls. CUA evidence described below is a manual execution record, not a CI claim.
 
 ## R / AT traceability
 
-| AT | Requirements | C/S/M result | Observed evidence / remaining subcase | D |
+| AT | Requirements | C/S/M result | Observed evidence / remaining subcase | Product-specific D |
 | --- | --- | --- | --- | --- |
 | AT01 | R01/R02 | pass | `semantics.test.mjs`: multiple cells retain functions, objects, identity and mutations | — |
 | AT02 | R02/R03 | pass | declaration varieties, legal redeclarations, illegal same-cell duplicate, exact [2,1,2] closure oracle | — |
@@ -29,27 +30,27 @@ Evidence date: 2026-09-11 (Asia/Shanghai). The final local automated suite passe
 | AT12 | R10 | pass | second execution busy, independent status/cancel, two-session isolation and stress | — |
 | AT13 | R11 | not-run | infinite loop, memory growth, bootstrap failure, explicit child kill and MCP EOF tested; supervisor SIGKILL during RPC and CPU loop tested; hard-RSS containment pending | — |
 | AT14 | R11/R12 | pass | wall timeout/reset; cancellation retains unknown; same-cell continuation blocked; fsync intent before dispatch; SIGKILL/restart barrier, active-owner rejection and disk-failure refusal tested in recovery.test.mjs | — |
-| AT15 | R12 | pass | new epoch/cleared binding, resource invalidation, no mock user-target closure, disposed session rejects reuse | blocked |
+| AT15 | R12 | pass | new epoch/cleared binding, resource invalidation, no mock user-target closure, disposed session rejects reuse | Separate scope |
 | AT16 | R13 | pass | undefined/BigInt/cycle/Error/Map/Set/TypedArray tags; no getter/toJSON execution, including TypedArray/DataView shadowing accessors | — |
 | AT17 | R13/R14 | pass | text flooding/stalled consumer/invalid PNG and same-chunk image/terminal race retain terminal and executed-action receipts; MCP cancellation/EOF remain diagnosable | — |
-| AT18 | R14/R18 | pass | CRC-validated PNG in SDK/MCP; unobserved, altered digest/bytes and stale screenshot guards refused in mock | blocked |
+| AT18 | R14/R18 | pass | CRC-validated PNG in SDK/MCP; unobserved, altered digest/bytes and stale screenshot guards refused in mock | Separate scope |
 | AT19 | R15 | not-run | guest process/fs/network/IPC/import/prototype attacks and stale-revision/raw malformed-frame tests pass; module/Promise and reordered-message fixtures also pass; OS hard budget remains | — |
 | AT20 | R16 | pass | diagnostic fields allowlist and synthetic secret/source scan; no component content log | — |
-| AT21 | R17/R18 | pass | Browser → Native → original Browser; same-name/URL twins untouched | blocked |
-| AT22 | R18 | pass | action executes, post-observation fails, receipt retained; observation refresh causes no input replay | blocked |
-| AT23 | R17/R19 | pass | direct client and code adapter use identical target/args/effect; backend calls recorded (acquire + navigate on each path) | blocked |
-| AT24 | R14/R20 | pass | independent model/preview callbacks and Electron UI image sections; old turn callback cannot borrow next turn | blocked |
-| AT25 | R11/R20 | pass | actual Electron Run/Stop/Reset via Codex CUA; running loop stopped, preview ended, reset new epoch | blocked |
+| AT21 | R17/R18 | pass | Browser → Native → original Browser; same-name/URL twins untouched | Separate scope |
+| AT22 | R18 | pass | action executes, post-observation fails, receipt retained; observation refresh causes no input replay | Separate scope |
+| AT23 | R17/R19 | pass | direct client and code adapter use identical target/args/effect; backend calls recorded (acquire + navigate on each path) | Separate scope |
+| AT24 | R14/R20 | pass | independent model/preview callbacks and Electron UI image sections; old turn callback cannot borrow next turn | Separate scope |
+| AT25 | R11/R20 | pass | actual Electron Run/Stop/Reset via Codex CUA; running loop stopped, preview ended, reset new epoch | Separate scope |
 | AT26 | R16/version | pass | exact dependency/engine/schema inventory, version mismatch rejection, locked package + clean installation test | — |
 | AT27 | R15/metrics | not-run | warm/cold/stability/lifecycle measured below; hard RSS bound/native-allocation pressure certification remains | — |
 
 ## Measured benchmark
 
-The checked-in `benchmark.json` is the final run's machine-readable result. The warm measurement includes two parallel SDK calls rather than subtracting transport overhead. It is not a CUA-task acceleration claim. An earlier compiler iteration measured ~1.2 ms warm p95; after adding tracked async transformation the relevant later result is the final JSON, not that earlier number.
+The checked-in `benchmark.json` retains the dated reference-machine measurement. Each standalone acceptance run writes its fresh result to `artifacts/benchmark.json`; CI uploads its own measurement separately. The warm measurement includes two parallel SDK calls rather than subtracting transport overhead. It is not a CUA-task acceleration claim. An earlier compiler iteration measured ~1.2 ms warm p95; after adding tracked async transformation the relevant later result is the final JSON, not that earlier number.
 
 The run executes 2,000 total cells in two sessions and 100 create/reset/dispose cycles. Every seen kernel PID is checked after disposal. RSS is sampled and reported, not declared an instantaneous hard cap. CI runs on its own machine; local results do not substitute for CI outcomes or signed distribution acceptance.
 
-## Actual Electron / Codex CUA record
+## Historical Electron / Codex CUA record (0.1.x)
 
 The sample was launched with an independent local ad-hoc bundle identity (`io.superche.persistent-repl.fixture`) to avoid selecting unrelated development Electron apps. Codex's available native CUA opened that exact fixture path and returned its AX tree.
 
@@ -65,3 +66,13 @@ Native AX observations were used for control/terminal proof; initial background 
 ## Additional memory investigation
 
 The source-only [memory prototype](memory-containment.md) now demonstrates OS fatal physical-footprint enforcement for native malloc, Node Buffer and the actual sandboxed kernel, including reset recovery and preserved sandbox denials. Its limit must be applied after sandbox-exec. It does not change the default runtime, is not an RSS-equivalent cap, and does not close the remaining P0 rows without the [budget decision and follow-up validation](memory-policy-proposal.md).
+
+## 0.2 package independence evidence
+
+The source suites cover 46 Core cases, 7 CUA/backend-contract cases and 1 MCP wire case. Package-boundary checks forbid reversed adapter dependencies; clean distribution tests rerun all 54 cases through installed public exports. The separate Core-only consumer verifies that CUA/MCP/testing/Electron/MCP SDK are not resolvable, executes persistent values, resets, and checks the old kernel exited. These are component checks and require no product account, endpoint or SDK. The reusable black-box backend contract labels its fixture evidence explicitly.
+
+## Current standalone reference-host UI (0.2.0)
+
+Actual Codex native CUA selected the exact Electron reference window running the new workspace packages. Run completed with browser state/image in the model-output section and independent preview images. A finite test session then ran an infinite-loop cell, observed running, and stopped it: kernelAlive false, internal/external cleanup confirmed, preview stopped. Reset returned new epochs and invalidation; Dispose reported no live kernel and confirmed cleanup. The sample process was stopped after verification. Native events and screenshots lagged; retries and exact execution/epoch values are retained in [electron-ui-0.2.json](evidence/electron-ui-0.2.json), with SHA-256 for every compiled package file. This verifies the independent synthetic reference host, without any Hi environment or device/model integration claim.
+
+The checked-in [standalone acceptance](evidence/standalone-acceptance.json) and [clean package checks](evidence/standalone-packages.json) record the local run. Fresh CI records are published per commit and Node version. Historical evidence files retain their original version labels.

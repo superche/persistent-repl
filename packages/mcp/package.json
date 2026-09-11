@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.19.0 <25"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/superche/persistent-repl.git"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_LICENSES.md"
+  ],
+  "name": "@superche/persistent-repl-mcp",
+  "description": "Host-independent stdio MCP adapter for persistent REPL",
+  "exports": {
+    ".": "./dist/mcp.js",
+    "./cli": "./dist/cli.js"
+  },
+  "bin": {
+    "persistent-repl-mcp": "dist/cli.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "ajv": "8.20.0"
+  },
+  "peerDependencies": {
+    "@superche/persistent-repl": "0.2.0"
+  }
+}

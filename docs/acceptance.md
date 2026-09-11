@@ -1,12 +1,12 @@
 # Acceptance evidence — 0.2.0 standalone delivery
 
-Evidence date: 2026-09-11 (Asia/Shanghai). The standalone suite now includes the Node kernel and Bridge paths: 46 legacy Core tests, 4 Node/V8 tests, 2 Bridge tests, 7 CUA/backend-contract tests and 1 MCP wire test. Generic/CUA/Bridge/MCP/backend-contract examples remain synthetic. Environment: macOS arm64, Darwin 25.5.0 / Apple M5 Pro, Node 22.19.0. Electron UI fixture: 44.3.0. Versions/integrity: [version-manifest.json](version-manifest.json). Source revision: the Git commit carrying this report (release tag identifies the exact tree).
+Evidence date: 2026-09-11 (Asia/Shanghai). The standalone suite now includes the Node kernel and Bridge paths: 46 legacy Core tests, 4 Node/V8 tests, 3 Bridge tests, 7 CUA/backend-contract tests and 1 MCP wire test. Generic/CUA/Bridge/MCP/backend-contract examples remain synthetic. Environment: macOS arm64, Darwin 25.5.0 / Apple M5 Pro, Node 22.19.0. Electron UI fixture: 44.3.0. Versions/integrity: [version-manifest.json](version-manifest.json). Source revision: the Git commit carrying this report (release tag identifies the exact tree).
 
 **Standalone automated acceptance is independent of Hi. Full component P0 acceptance remains open only for the hard-RSS subcase.** Hi-specific integration is outside the owner-approved [scope](scope.md), not a prerequisite or a passed result. Passing tests establish the named cases below, not an unconditional P0 acceptance claim. Remaining items are tracked in [handoff.md](handoff.md). `not-run` rows explicitly list covered portions and missing subcases. No P0 waiver is implied.
 
 ## Reproduction commands
 
-- `npm ci && npm run accept`: build, 60 source tests, package-boundary checks, five examples, benchmark, five tarballs, clean bundle tests and Core-only install/execution. Machine-readable report: `artifacts/acceptance.json`; logs retain individual phase results.
+- `npm ci && npm run accept`: build, 61 source tests, package-boundary checks, five examples, benchmark, five tarballs, clean bundle tests and Core-only install/execution. Machine-readable report: `artifacts/acceptance.json`; logs retain individual phase results.
 - `npm run test:core`, `npm run test:node`, `npm run test:bridge`, `npm run test:cua`, `npm run test:mcp`: independently runnable suites after build.
 - `npm run bench`: 200 warm pairs, 30 cold starts, 2,000 cells in two sessions, 100 lifecycle cycles and child-PID check.
 - `npm run pack:all`: five package artifacts plus a consumer shrinkwrap. `npm run verify:packages`: install into temporary directories outside the source checkout and verify runtime/dependency separation.
@@ -69,7 +69,7 @@ The source-only [memory prototype](memory-containment.md) now demonstrates OS fa
 
 ## 0.2 package independence evidence
 
-The source suites cover 46 legacy Core cases, 4 Node/V8 cases, 2 Bridge cases, 7 CUA/backend-contract cases and 1 MCP wire case. Package-boundary checks forbid reversed adapter dependencies; clean distribution tests rerun all 60 cases through installed public exports. The separate Core-only consumer verifies that CUA/MCP/testing/Electron/MCP SDK are not resolvable, executes persistent values, resets, and checks the old kernel exited. These are component checks and require no product account, endpoint or SDK. The reusable black-box backend contract labels its fixture evidence explicitly.
+The source suites cover 46 legacy Core cases, 4 Node/V8 cases, 3 Bridge cases, 7 CUA/backend-contract cases and 1 MCP wire case. Package-boundary checks forbid reversed adapter dependencies; clean distribution tests rerun all 61 cases through installed public exports. The separate Core-only consumer verifies that CUA/MCP/testing/Electron/MCP SDK are not resolvable, executes persistent values, resets, and checks the old kernel exited. These are component checks and require no product account, endpoint or SDK. The reusable black-box backend contract labels its fixture evidence explicitly.
 
 ## Current standalone reference-host UI (0.2.0)
 

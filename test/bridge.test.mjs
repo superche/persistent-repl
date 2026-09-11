@@ -6,7 +6,9 @@ import {
   createBridge,
   handleBridgeLine,
 } from "@superche/persistent-repl-bridge";
+import { createCuaProvider } from "@superche/persistent-repl-cua";
 import { createCounterProvider } from "@superche/persistent-repl-testing";
+import { MockCuaClient } from "@superche/persistent-repl-testing";
 
 // The managed local runner blocks sandbox-exec itself. CI and packaged hosts
 // use the normal sandbox path; this adapter only lets the contract run locally.
@@ -15,9 +17,10 @@ const spawnKernel = (command, args, options) =>
     ? spawn(args[2], args.slice(3), options)
     : spawn(command, args, options);
 
-async function setup() {
+async function setup(withCua = false) {
   const host = new ReplHost(2, spawnKernel);
   const counter = createCounterProvider();
+  const client = withCua ? new MockCuaClient() : undefined;
   const session = await host.create({
     ownerKey: "bridge-test",
     taskKey: "bridge-test",
@@ -25,7 +28,10 @@ async function setup() {
     capabilityRevision: "bridge-1",
     authorizationRevision: "auth-1",
     kernel: "node",
-    providers: [counter.provider],
+    providers: [
+      counter.provider,
+      ...(client ? [createCuaProvider(client)] : []),
+    ],
     authorize: () => true,
   });
   const bridge = createBridge(host, session, () => ({
@@ -34,7 +40,7 @@ async function setup() {
     turnKey: "turn-1",
     authorizationRevision: "auth-1",
   }));
-  return { host, bridge };
+  return { host, bridge, client };
 }
 
 test("agent bridge executes persistent Node cells and preserves request identity", async () => {
@@ -59,6 +65,26 @@ test("agent bridge executes persistent Node cells and preserves request identity
     assert.equal(second.id, "req-2");
     assert.equal(second.result.status, "completed");
     assert.equal(second.result.output[0].value, 2);
+  } finally {
+    await host.close();
+  }
+});
+
+test("Bridge preserves dynamic CUA dispatch inside the submitted code", async () => {
+  const { host, bridge, client } = await setup(true);
+  try {
+    const result = await bridge.execute(
+      {
+        code: "let tab=await cua.getTab('tab-1'); output.value(tab.initialObservation.targetId); await tab.click({ref:'button-1',guard:{observationId:tab.initialObservation.observationId}});",
+      },
+      "cua-agent-1",
+    );
+    assert.equal(result.status, "completed");
+    assert.equal(result.output[0].value, "tab-1");
+    assert.deepEqual(
+      client.calls.map((call) => call.method),
+      ["acquire", "click"],
+    );
   } finally {
     await host.close();
   }

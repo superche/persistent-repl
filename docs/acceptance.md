@@ -12,6 +12,8 @@ Evidence date: 2026-09-11 (Asia/Shanghai). The standalone suite now includes the
 - `npm run pack:all`: five package artifacts plus a consumer shrinkwrap. `npm run verify:packages`: install into temporary directories outside the source checkout and verify runtime/dependency separation.
 - `npm run demo:electron`: actual macOS window and controls. CUA evidence described below is a manual execution record, not a CI claim.
 
+For this managed local macOS sandbox, the reproducible fixture command is `NODE_ENV=test PERSISTENT_REPL_FIXTURE_UNSANDBOXED=1 npm run accept`. That pair of variables is accepted only by test fixtures: it avoids the host's nested Seatbelt restriction while keeping the normal production/CI launch path sandboxed. The report records RSS as unavailable in this mode because `/bin/ps` is denied by the outer sandbox; production/CI runs retain the child RSS sampler.
+
 ## R / AT traceability
 
 | AT | Requirements | C/S/M result | Observed evidence / remaining subcase | Product-specific D |
@@ -48,7 +50,7 @@ Evidence date: 2026-09-11 (Asia/Shanghai). The standalone suite now includes the
 
 The checked-in `benchmark.json` retains the dated reference-machine measurement. Each standalone acceptance run writes its fresh result to `artifacts/benchmark.json`; CI uploads its own measurement separately. The warm measurement includes two parallel SDK calls rather than subtracting transport overhead. It is not a CUA-task acceleration claim. An earlier compiler iteration measured ~1.2 ms warm p95; after adding tracked async transformation the relevant later result is the final JSON, not that earlier number.
 
-The run executes 2,000 total cells in two sessions and 100 create/reset/dispose cycles. Every seen kernel PID is checked after disposal. RSS is sampled and reported, not declared an instantaneous hard cap. CI runs on its own machine; local results do not substitute for CI outcomes or signed distribution acceptance.
+The run executes 2,000 total cells in two sessions and 100 create/reset/dispose cycles. Every seen kernel PID is checked after disposal. RSS is sampled and reported on the normal production/CI path, not declared an instantaneous hard cap. In the managed local fixture mode above, the report sets `observedMaxRssBytes` to `null` and records `rssMeasurement` as unavailable rather than fabricating a value. CI runs on its own machine; local results do not substitute for CI outcomes or signed distribution acceptance.
 
 ## Historical Electron / Codex CUA record (0.1.x)
 

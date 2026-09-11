@@ -543,9 +543,12 @@ export class ReplHost {
       process.env.PERSISTENT_REPL_NODE ?? process.execPath,
     );
     const args = ["--max-old-space-size=128", work];
+    const fixtureUnsandboxed =
+      process.env.NODE_ENV === "test" &&
+      process.env.PERSISTENT_REPL_FIXTURE_UNSANDBOXED === "1";
     let command = node,
       spawnArgs = args;
-    if (process.platform === "darwin") {
+    if (process.platform === "darwin" && !fixtureUnsandboxed) {
       const quote = (p: string) => JSON.stringify(p);
       const profile = `(version 1)(deny default)(allow process-exec (literal ${quote(node)}))(allow process-info*)(allow signal (target self))(allow sysctl-read)(allow mach-lookup)(allow file-read-metadata)(allow file-read* (literal "/") ${dependencyReadRoots(
         root,
@@ -556,7 +559,7 @@ export class ReplHost {
         )} (subpath ${quote(process.versions.electron ? node.slice(0, node.indexOf(".app/") + 5) : node.slice(0, node.lastIndexOf("/")))}) (subpath "/System/Library") (subpath "/usr/lib") (literal "/dev/null") (literal "/dev/urandom") (literal "/dev/random"))(allow file-write* (literal "/dev/null"))`;
       command = "/usr/bin/sandbox-exec";
       spawnArgs = ["-p", profile, node, ...args];
-    } else if (process.env.PERSISTENT_REPL_FIXTURE_UNSANDBOXED !== "1") {
+    } else if (process.platform !== "darwin" && !fixtureUnsandboxed) {
       throw new Error("UNSUPPORTED_PLATFORM");
     }
     const child = this.spawnKernel(command, spawnArgs, {
@@ -630,22 +633,24 @@ export class ReplHost {
           s.state = "faulted";
       }
     });
-    s.rssTimer = setInterval(() => {
-      if (!child.pid) return;
-      execFile(
-        "/bin/ps",
-        ["-o", "rss=", "-p", String(child.pid)],
-        { timeout: 500 },
-        (err, out) => {
-          if (
-            !err &&
-            Number(out.trim()) * 1024 > s.policy.rssBytes &&
-            s.child === child
-          )
-            void this.#terminate(s, "crashed", "RSS_LIMIT");
-        },
-      );
-    }, 200);
+    s.rssTimer = fixtureUnsandboxed
+      ? setInterval(() => {}, 60 * 60 * 1000)
+      : setInterval(() => {
+          if (!child.pid) return;
+          execFile(
+            "/bin/ps",
+            ["-o", "rss=", "-p", String(child.pid)],
+            { timeout: 500 },
+            (err, out) => {
+              if (
+                !err &&
+                Number(out.trim()) * 1024 > s.policy.rssBytes &&
+                s.child === child
+              )
+                void this.#terminate(s, "crashed", "RSS_LIMIT");
+            },
+          );
+        }, 200);
     s.rssTimer.unref();
     s.starting = ready.finally(() => {
       s.starting = undefined;

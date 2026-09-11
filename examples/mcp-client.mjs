@@ -7,11 +7,20 @@ const client = new Client(
   { name: "persistent-repl-real-client-fixture", version: "0.1.0" },
   { capabilities: {} },
 );
+const fixtureEnv =
+  process.env.NODE_ENV === "test" &&
+  process.env.PERSISTENT_REPL_FIXTURE_UNSANDBOXED === "1"
+    ? {
+        NODE_ENV: "test",
+        PERSISTENT_REPL_FIXTURE_UNSANDBOXED: "1",
+      }
+    : undefined;
 const transport = new StdioClientTransport({
   command: process.execPath,
   args: [
     fileURLToPath(import.meta.resolve("@superche/persistent-repl-mcp/cli")),
   ],
+  env: fixtureEnv,
   stderr: "pipe",
 });
 try {

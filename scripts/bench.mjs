@@ -25,6 +25,9 @@ const ctx = () => ({
   authorizationRevision: "1",
 });
 const execute = (session, code) => host.execute(session, { code }, ctx());
+const fixtureUnsandboxed =
+  process.env.NODE_ENV === "test" &&
+  process.env.PERSISTENT_REPL_FIXTURE_UNSANDBOXED === "1";
 const warm = [],
   cold = [],
   pids = new Set();
@@ -54,14 +57,19 @@ try {
   for (const s of [a, b]) {
     const state = await host.status(s);
     pids.add(state.kernelPid);
-    maxRss = Math.max(
-      maxRss,
-      Number(
-        execFileSync("/bin/ps", ["-o", "rss=", "-p", String(state.kernelPid)], {
-          encoding: "utf8",
-        }).trim(),
-      ) * 1024,
-    );
+    if (!fixtureUnsandboxed)
+      maxRss = Math.max(
+        maxRss,
+        Number(
+          execFileSync(
+            "/bin/ps",
+            ["-o", "rss=", "-p", String(state.kernelPid)],
+            {
+              encoding: "utf8",
+            },
+          ).trim(),
+        ) * 1024,
+      );
     await host.dispose(s);
   }
   for (let i = 0; i < 100; i++) {
@@ -98,7 +106,10 @@ try {
     coldMs: stats(cold),
     stability: { cells: 2000, sessions: 2, pass: true },
     lifecycle: { cycles: 100, kernelPids: pids.size, remaining: alive.length },
-    observedMaxRssBytes: maxRss,
+    observedMaxRssBytes: fixtureUnsandboxed ? null : maxRss,
+    rssMeasurement: fixtureUnsandboxed
+      ? "unavailable: managed test sandbox denies /bin/ps"
+      : "child RSS sampled with /bin/ps",
     budgets: { warmP95: 100, coldP95: 2000, rssBytes: DEFAULT_POLICY.rssBytes },
   };
   assert.ok(report.warmParallelPairMs.p95 < 100);

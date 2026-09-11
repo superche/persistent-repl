@@ -29,7 +29,7 @@ const wasm =
 const manifest = {
   package: "@superche/persistent-repl",
   version: "0.2.0",
-  packages: ["core", "cua", "mcp", "testing"]
+  packages: ["core", "cua", "bridge", "mcp", "testing"]
     .map((name) =>
       JSON.parse(fs.readFileSync(`packages/${name}/package.json`, "utf8")),
     )

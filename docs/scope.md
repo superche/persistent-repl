@@ -4,7 +4,8 @@ On 2026-09-11 the requirement owner instructed: **“解耦Hi，独立交付和�
 
 ## Independent delivery
 
-- Four separately installable npm packages: Core, CUA adapter, MCP adapter and explicitly synthetic testing support.
+- Five separately installable npm packages: Core, CUA adapter, agent-neutral execute Bridge, MCP adapter and explicitly synthetic testing support.
+- Core exposes a persistent Node/V8 kernel mode (`kernel: "node"`) alongside the compatibility QuickJS mode. The Bridge is the coding-agent boundary; it forwards one code cell into the existing session and preserves dynamic RPC/CUA execution.
 - A product-neutral Electron reference host, public host/provider/backend contracts, source and dependency locks.
 - Source and clean-distribution acceptance, Core-only install/run proof, contract tests and lifecycle/benchmark evidence on the supported macOS runtime.
 - No Hi package, repository, SDK, login, service URL, model access or signing identity is a prerequisite for independent acceptance.
@@ -20,6 +21,8 @@ On 2026-09-11 the requirement owner instructed: **“解耦Hi，独立交付和�
 | UI | Runnable independent reference application | Wire into the host's own UI and deployment |
 
 Dependency direction is host → optional adapter → Core. Core has no host or adapter import. Device clients can implement the public contract without importing Core internals. Test-only fixtures are imported explicitly from the testing package.
+
+The actual closed loop is: coding agent → Bridge `execute(code)` → persistent Node REPL → trusted CUA provider RPC → external CUA executor → structured result/image → REPL continuation → Bridge result. This repository proves the first five stages with the synthetic backend. It does not claim a real device executor or model image acknowledgement without an adopting host endpoint.
 
 ## Acceptance mapping
 

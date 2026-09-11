@@ -533,7 +533,11 @@ export class ReplHost {
   async #start(s: Session) {
     if (s.child) return;
     if (s.starting) return s.starting;
-    const work = fileURLToPath(new URL("./kernel/worker.js", import.meta.url));
+    const workerName =
+      s.config.kernel === "node" ? "node-worker.js" : "worker.js";
+    const work = fileURLToPath(
+      new URL(`./kernel/${workerName}`, import.meta.url),
+    );
     const root = realpathSync(fileURLToPath(new URL("../", import.meta.url)));
     const node = realpathSync(
       process.env.PERSISTENT_REPL_NODE ?? process.execPath,

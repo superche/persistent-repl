@@ -4,7 +4,7 @@
 
 `npm ci && npm run check` builds TypeScript, runs semantic/security/service/CUA tests, then generic/CUA/MCP examples. `npm run bench` measures 200 warm parallel pairs, 30 cold starts, 2,000 total cells and 100 create/reset/dispose cycles. Every benchmark target is synthetic.
 
-`npm run accept` is the standalone acceptance entrypoint. `npm run pack:all` produces four package tarballs and a consumer shrinkwrap under artifacts/0.2.0. `npm run verify:packages` tests a clean bundle installation and an isolated Core-only consumer outside the checkout. The source workspace lock and Core-only shrinkwrap retain pinned public registry integrities.
+`npm run accept` is the standalone acceptance entrypoint. `npm run pack:all` produces five package tarballs and a consumer shrinkwrap under artifacts/0.2.0. `npm run verify:packages` tests a clean bundle installation and an isolated Core-only consumer outside the checkout. The source workspace lock and Core-only shrinkwrap retain pinned public registry integrities.
 
 For the Electron reference app, run `npm ci` at workspace root and `npm run demo:electron`. The sample consumes public Core/CUA/testing packages; it is a synthetic reference host with separate model-output and preview consumers. It requires no product SDK or model credential. A bundle consumer supplies Electron 44.3.0 or runs from the source workspace.
 

@@ -478,6 +478,10 @@
       "resolved": "packages/core",
       "link": true
     },
+    "node_modules/@superche/persistent-repl-bridge": {
+      "resolved": "packages/bridge",
+      "link": true
+    },
     "node_modules/@superche/persistent-repl-cua": {
       "resolved": "packages/cua",
       "link": true
@@ -2613,6 +2617,17 @@
       "license": "ISC",
       "peerDependencies": {
         "zod": "^3.25.28 || ^4"
+      }
+    },
+    "packages/bridge": {
+      "name": "@superche/persistent-repl-bridge",
+      "version": "0.2.0",
+      "license": "MIT",
+      "engines": {
+        "node": ">=22.19.0 <25"
+      },
+      "peerDependencies": {
+        "@superche/persistent-repl": "0.2.0"
       }
     },
     "packages/core": {

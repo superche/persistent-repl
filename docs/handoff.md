@@ -1,6 +1,6 @@
 # Standalone delivery and remaining work
 
-Version 0.2.0 implements the owner's explicit scope change: **“解耦Hi，独立交付和验收”**. The delivery consists of independently packaged Core/CUA/MCP/testing, a reference host, source and locks, a reusable backend contract runner, and `npm run accept`. See [scope.md](scope.md). Hi integration is outside this delivery; there is no pending Hi environment request.
+Version 0.2.0 implements the owner's explicit scope change: **“解耦Hi，独立交付和验收”**. The delivery consists of independently packaged Core/CUA/Bridge/MCP/testing, a persistent Node/V8 kernel mode, a reference host, source and locks, a reusable backend contract runner, and `npm run accept`. See [scope.md](scope.md). Hi integration is outside this delivery; there is no pending Hi environment request.
 
 ## Remaining component P0 item
 
@@ -11,6 +11,8 @@ Durable host crash recovery is provided by FileRecoveryJournal. A real host conf
 ## Optional adoption work
 
 Any future host, including Hi, supplies its own identity/authorization, CuaClient driver, model-image delivery/acknowledgement, preview consumer and UI. Those are public extension points rather than dependencies of Core. The driver can first run [backend-conformance.md](backend-conformance.md); actual device actions and model consumption must have separate evidence. Product signing, notarization and release integration belong to the adopting product and do not block the source/npm/reference-host delivery.
+
+The only missing input for a real end-to-end CUA claim is a trusted executor endpoint: a module, process or socket owned by the adopting host that implements the public `CuaClient` contract and returns target identity, fresh observations, dispatch/outcome/effect receipts, stop/cleanup results and any image-consumption acknowledgement. No Hi-specific SDK or MCP reverse-call assumption is part of that input.
 
 Historical rc.3 Electron and rc.4 memory-prototype records are retained with their exact tested revision and synthetic evidence labels. They are not relabeled as tests of changed binaries. Current delivery validation is recorded in [acceptance.md](acceptance.md) and its versioned evidence files.
 

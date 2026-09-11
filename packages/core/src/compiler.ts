@@ -285,6 +285,77 @@ export function compileModule(source: string) {
     })!.ast as t.File,
   ).code;
 }
+
+/** Compile a registered module for the Node/V8 kernel without enabling Node's module loader. */
+export function compileModuleForNode(source: string) {
+  const ast = parse(source, {
+    sourceType: "module",
+    allowAwaitOutsideFunction: true,
+  });
+  rejectUnsupportedAsync(ast);
+  const exports: string[] = [];
+  for (let index = 0; index < ast.program.body.length; index++) {
+    const statement = ast.program.body[index];
+    if (t.isImportDeclaration(statement))
+      throw Object.assign(
+        new Error("Static module imports are unavailable in the Node kernel."),
+        {
+          code: "MODULE_DENIED",
+          stage: "link",
+        },
+      );
+    if (t.isExportAllDeclaration(statement))
+      throw Object.assign(
+        new Error("Export-all module declarations are unavailable."),
+        {
+          code: "MODULE_DENIED",
+          stage: "link",
+        },
+      );
+    if (t.isExportNamedDeclaration(statement)) {
+      const declaration = statement.declaration;
+      if (declaration) {
+        ast.program.body[index] = declaration as any;
+        for (const name of Object.keys(t.getBindingIdentifiers(declaration)))
+          exports.push(`__moduleExports[${JSON.stringify(name)}]=${name};`);
+      } else {
+        for (const specifier of statement.specifiers) {
+          if (!t.isExportSpecifier(specifier)) continue;
+          const exported = t.isIdentifier(specifier.exported)
+            ? specifier.exported.name
+            : (specifier.exported as any).value;
+          const local = t.isIdentifier(specifier.local)
+            ? specifier.local.name
+            : (specifier.local as any).value;
+          exports.push(
+            `__moduleExports[${JSON.stringify(exported)}]=${local};`,
+          );
+        }
+        ast.program.body[index] = t.emptyStatement();
+      }
+    } else if (t.isExportDefaultDeclaration(statement)) {
+      const declaration = statement.declaration;
+      if (
+        (t.isFunctionDeclaration(declaration) ||
+          t.isClassDeclaration(declaration)) &&
+        declaration.id
+      ) {
+        exports.push(`__moduleExports.default=${declaration.id.name};`);
+        ast.program.body[index] = declaration;
+      } else {
+        exports.push("__moduleExports.default=__moduleDefault;");
+        ast.program.body[index] = t.variableDeclaration("const", [
+          t.variableDeclarator(
+            t.identifier("__moduleDefault"),
+            declaration as any,
+          ),
+        ]);
+      }
+    }
+  }
+  const body = generate(ast).code;
+  return `(async()=>{const __moduleExports=Object.create(null);${body}${exports.join("")}return __moduleExports;})()`;
+}
 export function compileFacade(source: string) {
   const ast = parse(`(${source})`, { sourceType: "script" });
   rejectUnsupportedAsync(ast);

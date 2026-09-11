@@ -11,6 +11,10 @@
       "version": "0.2.0"
     },
     {
+      "name": "@superche/persistent-repl-bridge",
+      "version": "0.2.0"
+    },
+    {
       "name": "@superche/persistent-repl-mcp",
       "version": "0.2.0"
     },
@@ -24,7 +28,7 @@
   "adapter": "synthetic-cua/1.0.0",
   "quickjsEmscripten": "0.32.0",
   "engineWasmSha256": "105c3bed22d457e43e3d1c3c1c6959fda62a8fe06f0fc8a985303c3a2be72232",
-  "lockSha256": "9101315b000a64a97f851fcbf32d29366ee4dba68848be1077d2b98d81749609",
+  "lockSha256": "57ba8ba2604bc8b6f61059f3f4419e5d2d41001e6e1de342cb59fc7f0e2f078f",
   "dependencies": [
     {
       "name": "@babel/code-frame",

@@ -7,6 +7,7 @@ const allowed = {
   cua: ["@superche/persistent-repl"],
   mcp: ["@superche/persistent-repl"],
   testing: ["@superche/persistent-repl", "@superche/persistent-repl-cua"],
+  bridge: ["@superche/persistent-repl"],
 };
 function files(path) {
   return readdirSync(path, { withFileTypes: true }).flatMap((e) =>

@@ -17,7 +17,7 @@ rmSync(destination, { recursive: true, force: true });
 mkdirSync(destination, { recursive: true });
 execFileSync(process.execPath, ["scripts/lock-core.mjs"], { stdio: "inherit" });
 const packages = [];
-for (const directory of ["core", "cua", "mcp", "testing"]) {
+for (const directory of ["core", "cua", "mcp", "testing", "bridge"]) {
   cpSync(
     "THIRD_PARTY_LICENSES.md",
     `packages/${directory}/THIRD_PARTY_LICENSES.md`,
@@ -59,6 +59,7 @@ writeFileSync(
         test: "node --test test/*.test.mjs",
         "demo:core": "node examples/generic.mjs",
         "demo:cua": "node examples/cua.mjs",
+        "demo:bridge": "node examples/bridge.mjs",
         "demo:mcp": "node examples/mcp-client.mjs",
         "demo:contract": "node examples/backend-contract.mjs",
       },

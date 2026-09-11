@@ -247,6 +247,8 @@ export interface TrustedSessionConfig {
   semanticsVersion: string;
   capabilityRevision: string;
   authorizationRevision: string;
+  /** Kernel runtime. Node uses the host's V8 vm context; QuickJS remains available for compatibility. */
+  kernel?: "node" | "quickjs";
   policy?: Partial<ResourcePolicy>;
   providers?: ServiceProvider[];
   modules?: ModuleRegistration[];

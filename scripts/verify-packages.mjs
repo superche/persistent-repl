@@ -66,6 +66,7 @@ try {
   for (const [name, script] of [
     ["generic", "generic"],
     ["cua", "cua"],
+    ["bridge", "bridge"],
     ["mcp", "mcp-client"],
     ["backend-contract", "backend-contract"],
   ])
